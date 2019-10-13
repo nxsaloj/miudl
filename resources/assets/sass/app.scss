@@ -1,0 +1,20 @@
+// Imports
+@import '~jquery-toast-plugin/dist/jquery.toast.min.css';
+@import '~perfect-scrollbar/dist/css/perfect-scrollbar.min.css';
+@import '~mdi/css/materialdesignicons.css';
+//@import '~bootstrap-select/dist/css/bootstrap-select.min.css';
+@import '~icheck/skins/all.css';
+@import '~dropify/dist/css/dropify.min.css';
+@import '~font-awesome/css/font-awesome.css';
+@import 'componentes.scss';
+@import '~vue-multiselect/dist/vue-multiselect.min.css';
+
+@font-face {
+    font-family: "Wigrum-Medium";
+    src: url("Wigrum-Medium.otf") format("opentype");
+}
+
+@font-face {
+    font-family: "Wigrum-Regular";
+    src: url("Wigrum-Regular.otf") format("opentype");
+}
