@@ -4,15 +4,15 @@ stages:
 repository:
   stage: fetch
   script:
-    - sudo cd /var/www/miudl
-    - sudo git fetch https://nxsaloj:aasdfg47024299@gitlab.com/nxsaloj/miudl.git
+    - cd /var/www/miudl
+    - git fetch https://nxsaloj:aasdfg47024299@gitlab.com/nxsaloj/miudl.git
     #- git fetch origin master
-    - sudo git reset --hard FETCH_HEAD
-    - sudo git clean -df
+    - git reset --hard FETCH_HEAD
+    - git clean -df
 deploy:
   stage: despliegue
   script:
-    - sudo cd /var/www/miudl
-    - sudo npm run dev
+    - cd /var/www/miudl
+    - npm run dev
     #- composer update
 
