@@ -24,7 +24,7 @@
                     <span class="mdi mdi-menu"></span>
                 </button>
                 <div class="nav-profile">
-
+                    <span>Hola, @if(!Auth::guest()) @if(Auth::user()->Trabajador) {{Auth::user()->Trabajador->Nombre." ".Auth::user()->Trabajador->Apellidos}} @else Administrador @endif @else Invitado @endif</span>
                 </div>
                 <form class="form-inline mt-2 mt-md-0 d-none d-lg-block ml-lg-auto">
 
