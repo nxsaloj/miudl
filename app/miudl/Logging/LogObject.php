@@ -14,7 +14,7 @@ class LogObject extends BaseModel
     public $timestamps = true;
 
     public function Usuario(){
-        return $this->belongsTo('App\Models\App\Usuario','Usuario_id','Usuario_id');
+        return $this->belongsTo('miudl\Usuario\Usuario','Usuario_id','Usuario_id');
     }
 
     public static function getTipo($data)

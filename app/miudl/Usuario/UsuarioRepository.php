@@ -1,14 +1,14 @@
 <?php
 
-namespace miudl\PuestoTrabajo;
+namespace miudl\Usuario;
 
 use miudl\Base\BaseRepository;
 
-class PuestoTrabajoRepository extends BaseRepository implements PuestoTrabajoRepositoryInterface
+class UsuarioRepository extends BaseRepository implements UsuarioRepositoryInterface
 {
     public function getModel($params=[])
     {
-        return new PuestoTrabajo($params);
+        return new Usuario($params);
     }
 
     public function findOrFail($id)
@@ -95,4 +95,8 @@ class PuestoTrabajoRepository extends BaseRepository implements PuestoTrabajoRep
     }
 
 
+    public function change($userid, array $params = array())
+    {
+        // TODO: Implement change() method.
+    }
 }

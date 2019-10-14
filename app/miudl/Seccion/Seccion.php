@@ -11,14 +11,14 @@ class Seccion extends BaseModel
     protected $table = 'TB_Seccion';
     protected $primaryKey = 'id';
     public $incrementing = false;
-    protected $fillable = ['Nombre','Icono','Url','Prioridad','Seccion_idPadre','Deleted_at'];
+    protected $fillable = ['Nombre','Icono','Url','Prioridad','idPadre','Deleted_at'];
     public $timestamps = true;
     public static $admins = [1];
 
     public function Padre(){
-        return $this->belongsTo('App\Models\App\SeccionApp','idPadre','id');
+        return $this->belongsTo('miudl\Seccion\Seccion','idPadre','id');
     }
     public function Secciones(){
-        return $this->hasMany('App\Models\App\SeccionApp','idPadre','id');
+        return $this->hasMany('miudl\Seccion\Seccion','idPadre','id');
     }
 }

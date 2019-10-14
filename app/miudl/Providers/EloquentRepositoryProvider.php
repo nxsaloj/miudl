@@ -23,5 +23,13 @@ class EloquentRepositoryProvider extends ServiceProvider{
             'miudl\PuestoTrabajo\PuestoTrabajoValidatorInterface',
             'miudl\PuestoTrabajo\PuestoTrabajoValidator'
         );
+        $this->app->bind(
+            'miudl\Usuario\UsuarioRepositoryInterface',
+            'miudl\Usuario\UsuarioRepository'
+        );
+        $this->app->bind(
+            'miudl\Usuario\UsuarioValidatorInterface',
+            'miudl\Usuario\UsuarioValidator'
+        );
     }
 }

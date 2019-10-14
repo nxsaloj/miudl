@@ -13,6 +13,7 @@ class AppComposer {
     public function compose(View $view)
     {
         $secciones = $this->controller->getSeccionesByModel();
-        $view->with('secciones', $secciones);
+        $sidebar_items = $this->controller->getSeccionesHTML($secciones);
+        $view->with(['secciones'=>$secciones,'sidebar_items'=>$sidebar_items]);
     }
 }

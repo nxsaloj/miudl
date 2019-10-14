@@ -2,31 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use miudl\Seccion\SeccionRepositoryInterface;
+use miudl\Seccion\repositoryInterface;
 use Illuminate\Http\Request;
 use Auth;
+use miudl\Seccion\SeccionRepositoryInterface;
 
 class SeccionController extends Controller
 {
     protected $repository;
-    public function __construct(SeccionRepositoryInterface $_seccionRepository)
+    public function __construct(SeccionRepositoryInterface $_repository)
     {
-        $this->seccionRepository = $_seccionRepository;
-        if($this->seccionRepository == null) throw new \Exception('Repo not recognized');
+        $this->repository = $_repository;
+        if($this->repository == null) throw new \Exception('Repo not recognized');
     }
 
-    public function getSeccionesByModel()
+    public function getSeccionesByModel($parentid=null)
     {
         $usuario = Auth::user();
         if($usuario)
         {
-            $data = $this->seccionRepository->getSeccionesByModel(true,($puesto = $usuario->PuestoTrabajo())? $puesto:$usuario);
-            $serialized = json_encode($data);
+            if($usuario->id > 1) $data = $this->repository->getSeccionesByModel(!isset($parentid),($puesto = $usuario->PuestoTrabajo())? $puesto:$usuario, $parentid);
+            else $data = $this->repository->getSecciones(!isset($parentid), $parentid);
+            return $data;
         }
         return [];
     }
 
-    public static function getSeccionesHTML($secciones, $url_parent=null)
+    public function getSeccionesHTML($secciones, $url_parent=null)
     {
         $html = "";
         foreach($secciones as $seccion)
@@ -36,13 +38,10 @@ class SeccionController extends Controller
             $id = $seccion["id"];
             $nombre = $seccion["Nombre"];
             $prioridad = $seccion["Prioridad"];
-            $childs = ($seccion["secciones"] != null)? $seccion["secciones"]:[];
+            $childs = $this->getSeccionesByModel($id);
 
             if($prioridad == '0') $prioridad = 1;
 
-            /*$section = '
-            <li class="nav-item '.(($icono == null)? "nav-category":"").'">';
-            if($icono == null) $section .= '<span class="nav-link">'.$nombre.'</span> </li>';*/
             $section = "";
             if($prioridad >= 0)
             {
@@ -66,7 +65,7 @@ class SeccionController extends Controller
             if(sizeof($childs) > 0)
             {
                 if($icono != null) $section .= '<div class="collapse" id="'.str_replace(' ','',$id).'Submenu"><ul class="nav flex-column sub-menu">';
-                $section .= self::getSeccionesHTML($childs, $url);
+                $section .= $this->getSeccionesHTML($childs, $url);
                 if($icono != null) $section .= '</ul></div>';
             }
             if(sizeof($childs) > 0) $section .='</li>';

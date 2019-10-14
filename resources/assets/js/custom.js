@@ -1,17 +1,8 @@
 
 $(function() {
     'use strict';
-   
 
-    //$('.dropify').dropify();
-    $('.dropify').dropify({
-        messages: {
-            'default': 'Presione o arrastre el archivo aquí',
-            'replace': 'Presiono o arrastre para reemplazar',
-            'remove':  'Remover',
-            'error':   'Ooops, algo no funcionó bien.'
-        }
-    });
+
     $(document).ready(function() {
         $("body").on('keydown', 'input, textarea:not(.ignore-keyup)', function(e) {
             var self = $(this)
@@ -19,7 +10,7 @@ $(function() {
               , focusable
               , next
               ;
-            
+
             if(self.parent().is(":not(.bs-searchbox)"))
                 if (e.keyCode == 13) {
                     focusable = form.find('input,a,select,button,textarea').filter(':visible');
@@ -36,8 +27,8 @@ $(function() {
         Grid.init();
     });
 
-    
-    
+
+
     window.onload = function (event) {flexFont();}
     window.onresize = function (event) {flexFont();   };
 

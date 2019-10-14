@@ -5,6 +5,6 @@
     </a>
 </li>
 
-@if(!Auth::check())
-{!! $html = \App\Http\Controllers\SeccionController::getSeccionesHTML($secciones) !!}
+@if(\Auth::check())
+{!! $sidebar_items !!}
 @endif
