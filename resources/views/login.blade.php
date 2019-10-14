@@ -45,7 +45,7 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <button type="submit" tabindex="-1" class="btn btn-primary btn-block enter-btn">Acceder con CI :)</button>
+                                <button type="submit" tabindex="-1" class="btn btn-primary btn-block enter-btn">Acceder</button>
                             </div>
                             <p class="sign-up">Olvidé mi contraseña! <a href="/recuperar">Solicitar contraseña</a></p>
                         </form>
