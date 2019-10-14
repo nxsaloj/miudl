@@ -1,0 +1,15 @@
+stages:
+    - pull
+    - despliegue
+gitpull:
+  stage: pull
+  script:
+    - cd /var/www/miudl/
+    - git pull https://github.com/nxsaloj/miudl.git
+deploy:
+  stage: despliegue
+  script:
+    - cd /var/www/miudl/
+    - npm run dev
+    #- composer update
+

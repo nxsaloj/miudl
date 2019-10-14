@@ -4,7 +4,7 @@ $(function() {
 
 
     $(document).ready(function() {
-        $("body").on('keydown', 'input, textarea:not(.ignore-keyup)', function(e) {
+        $("body").on('keydown', 'input:not(.ignore-keyup), textarea:not(.ignore-keyup)', function(e) {
             var self = $(this)
               , form = self.parents('form:eq(0)')
               , focusable

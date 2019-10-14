@@ -30,11 +30,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Usuario *</label>
-                                <input type="text" name="user" value="{{old('user')}}" class="form-control p_input">
+                                <input type="text" name="user" value="{{old('user')}}" class="form-control p_input ignore-keyup">
                             </div>
                             <div class="form-group">
                                 <label>Contraseña *</label>
-                                <input type="password" name="password" class="form-control p_input">
+                                <input type="password" name="password" class="form-control p_input ignore-keyup">
                             </div>
                             <div class="form-group d-flex align-items-center justify-content-between">
                                 <div class="form-check">
@@ -57,6 +57,8 @@
         <!-- row ends -->
     </div>
     <!-- page-body-wrapper ends -->
+    <script src="{{ mix('js/scripts.js') }}"></script>
+    <script src="{{ mix('js/compiled.js') }}"></script>
 </div>
 </body>
 </html>
