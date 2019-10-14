@@ -5,7 +5,9 @@ repository:
   stage: fetch
   script:
     - cd /var/www/miudl/
-    - git fetch -all
+    - git fetch origin master
+    - git reset --hard FETCH_HEAD
+    - git clean -df
 deploy:
   stage: despliegue
   script:
