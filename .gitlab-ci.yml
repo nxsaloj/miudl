@@ -1,11 +1,11 @@
 stages:
-    - pull
+    - fetch
     - despliegue
-gitpull:
-  stage: pull
+repository:
+  stage: fetch
   script:
     - cd /var/www/miudl/
-    - git pull https://github.com/nxsaloj/miudl.git
+    - git fetch -all
 deploy:
   stage: despliegue
   script:
