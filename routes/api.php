@@ -48,5 +48,15 @@ Route::group(['middleware' => ['api','cors'],'prefix' => 'v1'], function() {
             Route::get('/', 'FacultadController@getFacultadesAPI');
             Route::delete('/{facultad}', 'FacultadController@destroy');
         });
+        Route::group(['prefix' => '/carreras'], function ()
+        {
+            Route::get('/', 'CarreraController@getCarrerasAPI');
+            Route::delete('/{carrera}', 'CarreraController@destroy');
+        });
+        Route::group(['prefix' => '/cursos'], function ()
+        {
+            Route::get('/', 'CursoController@getCursosAPI');
+            Route::delete('/{curso}', 'CursoController@destroy');
+        });
     });
 });

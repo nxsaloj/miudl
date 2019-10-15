@@ -44,6 +44,8 @@ Route::group(['middleware' => ['auth','checkAuth','pre.page']], function () {
     Route::group(['prefix' => '/educacion'], function() {
         Route::resource('/centrosuniversitarios', 'CentroUniversitarioController')->except(['show']);
         Route::resource('/facultades', 'FacultadController')->except(['show']);
+        Route::resource('/carreras', 'CarreraController')->except(['show']);
+        Route::resource('/cursos', 'CursoController')->except(['show']);
     });
 
     //Recursos Humanos

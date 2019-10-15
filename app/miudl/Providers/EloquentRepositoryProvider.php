@@ -55,5 +55,21 @@ class EloquentRepositoryProvider extends ServiceProvider{
             'miudl\Facultad\FacultadValidatorInterface',
             'miudl\Facultad\FacultadValidator'
         );
+        $this->app->bind(
+            'miudl\Carrera\CarreraRepositoryInterface',
+            'miudl\Carrera\CarreraRepository'
+        );
+        $this->app->bind(
+            'miudl\Carrera\CarreraValidatorInterface',
+            'miudl\Carrera\CarreraValidator'
+        );
+        $this->app->bind(
+            'miudl\Curso\CursoRepositoryInterface',
+            'miudl\Curso\CursoRepository'
+        );
+        $this->app->bind(
+            'miudl\Curso\CursoValidatorInterface',
+            'miudl\Curso\CursoValidator'
+        );
     }
 }

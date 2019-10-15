@@ -13,3 +13,5 @@ import trabajadores from './vue/paginas/rrhh/trabajadores'
 //Educacion
 import centrosuniversitario from './vue/paginas/educacion/centros_universitarios'
 import facultades from './vue/paginas/educacion/facultades'
+import carreras from './vue/paginas/educacion/carreras'
+import cursos from './vue/paginas/educacion/cursos'
