@@ -35,6 +35,12 @@ Route::group(['middleware' => ['auth','checkAuth','pre.page']], function () {
     Route::post('/change', 'MainController@change')->name('change');
 
     Route::get('/', 'PuestoTrabajoController@index')->name('index');
+    //Administracion
+    Route::group(['prefix' => '/administracion'], function() {
+        Route::resource('/usuarios', 'UsuarioController')->except(['edit']);
+        //Route::resource('/permisos', 'PermisoController')->except(['show']);
+        //Route::get('/logs', 'LogController@showLogs');
+    });
     //Recursos Humanos
     Route::group(['prefix' => '/rrhh'], function () {
         Route::resource('/puestos', 'PuestoTrabajoController')->except(['show']);

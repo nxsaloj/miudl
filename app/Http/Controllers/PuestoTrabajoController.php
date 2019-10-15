@@ -21,8 +21,7 @@ class PuestoTrabajoController extends Controller
 
     public function index()
     {
-        $puestos = $this->repository->search([], true);
-        return view('rrhh.puestos.index',array("puestos"=>$puestos));
+        return view('rrhh.puestos.index');
     }
 
     public function create()

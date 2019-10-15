@@ -2,6 +2,7 @@
 
 namespace miudl\Usuario;
 
+use App\Utils\Utils;
 use miudl\Base\BaseRepository;
 
 class UsuarioRepository extends BaseRepository implements UsuarioRepositoryInterface
@@ -26,32 +27,36 @@ class UsuarioRepository extends BaseRepository implements UsuarioRepositoryInter
     {
         //Parametros
         $pag = (isset($params['por_pagina']))? ((intval($params['por_pagina']) > 0)? $params['por_pagina']:null):$per_page;
-        $orderby = (isset($params['orderby']))?  array('field'=>$params['orderby'][0],'type'=>$params['orderby'][1])  :   array('field'=>'Nombre','type'=>true);
+        $orderby = (isset($params['orderby']))?  array('field'=>$params['orderby'][0],'type'=>$params['orderby'][1])  :   array('field'=>'Usuario','type'=>true);
         //Utilidad para validar campos y ordenamiento
         $sortby = \App\Utils\Utils::getSortBy($orderby['field']  ,$orderby['type']  ,$this->getModel());
         //Validar con filtro de búsqueda
         $filtro = isset($params['filtro'])? $params['filtro']:null;
         //Query
 
-        $data = $this->getModel()->whereNull($this->getModel()->getTable().'.Deleted_at');
+        $data = $this->getModel()->whereNull($this->getModel()->getTable().'.Deleted_at')->join('TB_Trabajador','TB_Trabajador.Usuario_id',$this->getModel()->getTable().'.id');
         //Filtrar por like
         if($filtro)
         {
             $data = $data->where( function ( $query ) use ($filtro)
             {
-                $query->where($this->getModel()->getTable().'.Nombre','like','%'.$filtro.'%')->orWhere($this->getModel()->getTable().'.Codigo',$filtro);
+                $query->where($this->getModel()->getTable().'.Usuario','like','%'.$filtro.'%')
+                ->orWhere(\DB::RAW('CONCAT(TB_Trabajador.Nombre," ",TB_Trabajador.Apellidos)'),'LIKE', "%".str_replace(" ", "%", $filtro)."%")
+                ->orWhere(\DB::RAW('CONCAT(TB_Trabajador.Nombre," ",TB_Trabajador.Apellidos)'),'LIKE', "%".$filtro."%");
             });
         }
 
         //Ordenar por campo validado en UTILS
         if($sortby) $data = $data->orderBy($sortby['field'],$sortby['type']);
         //Paginar por X cantidad de registros por página
+        $extrafields = ["TB_Trabajador.id as Trabajador_id",\DB::raw("CONCAT(TB_Trabajador.Nombre,' ',TB_Trabajador.Apellidos) as Trabajador_Nombre")];
+        $fields = Utils::getFieldsJoin($this->getModel(), $extrafields);
         if($pag)
         {
-            $data = $data->paginate($pag);
+            $data = $data->paginate($pag, $fields);
         }
-        else if($filtro) $data =  $data->limit($per_page)->get();
-        else $data =  $data->get();
+        else if($filtro) $data =  $data->limit($per_page)->get($fields);
+        else $data =  $data->get($fields);
 
         return $data;
     }
@@ -64,11 +69,10 @@ class UsuarioRepository extends BaseRepository implements UsuarioRepositoryInter
         return false;
     }
 
-    public function reactivate(array $params)
+    public function reactivate($id)
     {
-        $data = $this->getModel()->onlyTrashed()->where('Codigo',$params['Codigo'])->firstOrFail();
-        $data->Deleted_at = null;
-        $data->fill($params);
+        $data = $this->getModel()->findOrFail($id);
+        $data->Deactivated_at = null;
         return $data->save();
     }
 
@@ -98,5 +102,24 @@ class UsuarioRepository extends BaseRepository implements UsuarioRepositoryInter
     public function change($userid, array $params = array())
     {
         // TODO: Implement change() method.
+    }
+
+    public function deactivate($id)
+    {
+        $data = $this->getModel()->findOrFail($id);
+        $data->Deactivated_at = \Carbon\Carbon::now();
+        if($data->save()) return $data;
+
+        return false;
+    }
+
+    public function reasign($id)
+    {
+        $data = $this->getModel()->findOrFail($id);
+        $data->password = \Hash::make(\miudl\Usuario\Usuario::getDefault());
+        $data->Changed_at = null;
+        if($data->save()) return $data;
+
+        return false;
     }
 }

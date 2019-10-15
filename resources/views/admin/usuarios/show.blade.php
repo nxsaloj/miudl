@@ -1,4 +1,4 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 @section('content')
 
 <div class="vue-usuarios vue-usuarios-detail">
@@ -17,19 +17,11 @@
                         {{$usuario->Usuario}}
                     </div>
                 </div>
-                @if($usuario->Empleado)
+                @if($usuario->Trabajador)
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Empleado</label>
+                    <label class="col-sm-4 col-form-label">Trabajador</label>
                     <div class="col-sm-8">
-                        {{$usuario->Empleado->Nombre}} {{$usuario->Empleado->Apellidos}}
-                    </div>
-                </div>
-                @endif
-                @if($usuario->Estudiante)
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Estudiante</label>
-                    <div class="col-sm-8">
-                        {{$usuario->Estudiante->Nombre}} {{$usuario->Estudiante->Apellidos}}
+                        {{$usuario->Trabajador->Nombre}} {{$usuario->Trabajador->Apellidos}}
                     </div>
                 </div>
                 @endif
@@ -42,7 +34,7 @@
                         <i class="mdi mdi-close-circle" style="color: rgb(250,50,50)"></i>
                         @endif
                     </div>
-                </div>            
+                </div>
             </div>
             <div class="card-footer">
                 <button type="button" @click.prevent="confirmReset({{$usuario}},$event)" class="btn btn-primary submit">Reasignar contraseña</button>

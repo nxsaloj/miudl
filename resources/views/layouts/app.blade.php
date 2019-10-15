@@ -67,7 +67,7 @@
             <footer class="footer">
                 <div class="container-fluid clearfix">
                     <span class="float-right">
-                     <small><a href="mailto:nisaloj@live.com?subject=Contacto">Nelson Saloj</a> &copy; 2019-{{ date("Y") }}</small>
+                     <small><a href="mailto:nisaloj@live.com?subject=Contacto">Nelson Saloj</a> &copy; 2019{{ (date("Y") > 2019)? "-".date("Y"):"" }}</small>
                     </span>
                 </div>
             </footer>

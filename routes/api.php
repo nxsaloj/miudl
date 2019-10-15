@@ -18,6 +18,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['middleware' => ['api','cors'],'prefix' => 'v1'], function() {
+    Route::group(['prefix' => '/administracion'], function() {
+        Route::group(['prefix' => '/usuarios'], function() {
+            Route::get('/', 'UsuarioController@getUsuariosAPI');
+            Route::delete('/{usuario}', 'UsuarioController@destroy');
+            Route::post('/desactivar/{usuario}', 'UsuarioController@desactivar');
+            Route::post('/reactivar/{usuario}', 'UsuarioController@reactivar');
+            Route::post('/reasignar/{usuario}', 'UsuarioController@reasignar');
+        });
+    });
     Route::group(['prefix' => '/rrhh'], function () {
         Route::group(['prefix' => '/trabajadores'], function() {
             Route::get('/', 'TrabajadorController@getTrabajadoresAPI');

@@ -72,173 +72,191 @@ class UsuarioController extends Controller
         }
         return redirect('/login')->with('no_login', $respuesta['mensaje']);
     }
-    /*public function index()
+
+    public function index()
     {
         return view('admin.usuarios.index');
     }
 
     public function create()
     {
-        //$puestos = \App\Models\RRHH\PuestoTrabajo::getPuestosTrabajo(null, null);
         return view('admin.usuarios.create');
     }
 
     public function store(Request $request)
     {
-        if(!Input::has('session_keep'))
-        {
-            $data = Input::all();   //$request->all();
-            $respuesta = Usuario::crearUsuario($data);
-            if ($respuesta['error'] == true){
-
-                if(isset($respuesta['exception'])) return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
-                else return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors($respuesta['errors'])->withInput();
+        $data = $request->except('_token');
+        $respuesta = $this->validator->isValid($data);
+        if (!isset($respuesta['error'])) {
+            $data = $respuesta;
+            $respuesta = [];
+            try {
+                if ($this->repository->isDeleted($data)) $this->repository->reactivate($data);
+                else {
+                    if ($model = $this->repository->create($data)) {
+                        event(new \App\Events\EventInserted(["Actividad"=>"registro de usuario","ItemId"=>$model->id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
+                        return redirect($this->_url)->with('info', 'El usuario se ha creado de forma exitosa');
+                    }
+                }
             }
-            else
-                return \App\Models\Shared\SessionKeep::getRedirect(redirect($this->_url)->with('info', 'El usuario se ha creado de forma exitosa'));
+            catch(\Illuminate\Database\QueryException $e){
+                $respuesta['exception'] = $e->getMessage();
+                $respuesta['mensaje'] = 'Ocurrió una excepción en la operación hacia la base de datos';
+                $respuesta['error']   = true;
+                \Log::channel('error')->debug('QueryException ' . $e->getMessage());
+            }
+            catch (\Exception $e) {
+                $respuesta['exception'] = $e->getMessage();
+                $respuesta['mensaje'] = 'Ocurrió una excepción en la operación';
+                $respuesta['error']   = true;
+                \Log::channel('error')->debug('Exception ' . $e->getMessage());
+            }
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
         }
-        else
-        {
-            $datatemp = Input::only(['codigo','nombre','apellidos','puesto']);
-            return \App\Models\Shared\SessionKeep::goToPage($this->_url.'/create',Input::get('session_keep'),'usuario',$datatemp);
+        else {
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors($respuesta['errors'])->withInput();
         }
     }
 
     public function show($id)
     {
-        $usuario = Usuario::getUsuario($id);
-        if(!$usuario) abort(404);
+        $usuario = $this->repository->findOrFail($id);
         return view('admin.usuarios.show', array("usuario"=>$usuario));
-    }
-
-
-    public function update(Request $request, $id)
-    {
-        if(!Input::has('session_keep'))
-        {
-            $data = Input::all();   //$request->all();
-            $respuesta = Usuario::editarUsuario($id, $data);
-            if ($respuesta['error'] == true){
-                if(isset($respuesta['exception'])) return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
-                else return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors($respuesta['errors'])->withInput();
-            }
-            else
-                return redirect($this->_url)->with('info', 'El usuario se ha modificado de forma exitosa');
-        }
-        else
-        {
-            $datatemp = Input::only(['codigo','nombre','apellidos','puesto']);
-            return \App\Models\Shared\SessionKeep::goToPage($this->_url.'/'.$id.'/edit',Input::get('session_keep'),'usuario',$datatemp,$id);
-        }
     }
 
     public function destroy(Request $request,$id)
     {
-        $respuesta = Usuario::eliminarUsuario($id);
-        if ($respuesta['error'] == true){
-            if(!in_array('api',$request->route()->action['middleware']))
-                if(isset($respuesta['exception'])) return redirect()->back()->with('error', 'Ocurrió un problema al tratar de eliminar el usuario')->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
-                else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de eliminar el usuario');
-            else
-                return \Response::json(array(
-                    "data"=>null,
-                    "meta"=>array("msj"=>$respuesta['mensaje'],"exception"=> (isset($respuesta['exception'])? $respuesta['exception']:null )  )),  400);
-        }
-        else
-        {
-            $msj = 'El usuario se eliminó';
-            if(!in_array('api',$request->route()->action['middleware']))
-                return redirect($this->_url)->with('info', $msj);
-            else
-            {
-                if(Input::has('flash')) \Session::put('info', $msj);
-                return \Response::json(array(
-                    "data"=>array('Url'=>$this->_url),
-                    "meta"=>array("msj"=>$msj)), 200);
+        try {
+            if ($model = $this->repository->delete($id)) {
+                event(new \App\Events\EventDeleted(["Actividad"=>"eliminación de usuario","ItemId"=>$id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
+                $msj = 'El usuario se eliminó';
+                if(!in_array('api',$request->route()->action['middleware']))
+                    return redirect($this->_url)->with('info', $msj);
+                else
+                {
+                    if($request->has('flash')) \Session::put('info', $msj);
+                    return \Response::json(array(
+                        "data"=>array('Url'=>$this->_url),
+                        "meta"=>array("msj"=>$msj)), 200);
+                }
             }
+            else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de eliminar el usuario');
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            $respuesta['exception'] = $e->getMessage();
+            $respuesta['mensaje'] = 'Ocurrió una excepción en la operación hacia la base de datos';
+            $respuesta['error']   = true;
+            \Log::channel('error')->debug('QueryException ' . $e->getMessage());
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
+        }
+        catch (\Exception $e) {
+            $respuesta['exception'] = $e->getMessage();
+            $respuesta['mensaje'] = 'Ocurrió una excepción en la operación';
+            $respuesta['error'] = true;
+            \Log::channel('error')->debug('Exception ' . $e->getMessage());
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev' => $respuesta['exception']])->withInput();
         }
     }
 
     public function desactivar(Request $request,$id)
     {
-        $respuesta = Usuario::desactivarUsuario($id);
-        if ($respuesta['error'] == true){
-            if(!in_array('api',$request->route()->action['middleware']))
-                if(isset($respuesta['exception'])) return redirect()->back()->with('error', 'Ocurrió un problema al tratar de desactivar el usuario')->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
-                else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de desactivar el usuario');
-            else
-                return \Response::json(array(
-                    "data"=>null,
-                    "meta"=>array("msj"=>$respuesta['mensaje'],"exception"=> (isset($respuesta['exception'])? $respuesta['exception']:null )  )),  400);
-        }
-        else
-        {
-            $msj = 'El usuario se desactivó';
-            if(!in_array('api',$request->route()->action['middleware']))
-                return redirect($this->_url)->with('info', $msj);
-            else
-            {
-                if(Input::has('flash')) \Session::put('info', $msj);
-                return \Response::json(array(
-                    "data"=>array('Url'=>$this->_url),
-                    "meta"=>array("msj"=>$msj)), 200);
+        try {
+            if ($model = $this->repository->deactivate($id)) {
+                event(new \App\Events\EventUpdated(["Actividad"=>"desactivación de usuario","ItemId"=>$id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
+                $msj = 'El usuario se desactivó';
+                if(!in_array('api',$request->route()->action['middleware']))
+                    return redirect($this->_url)->with('info', $msj);
+                else
+                {
+                    if($request->has('flash')) \Session::put('info', $msj);
+                    return \Response::json(array(
+                        "data"=>array('Url'=>$this->_url),
+                        "meta"=>array("msj"=>$msj)), 200);
+                }
             }
+            else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de desactivar el usuario');
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            $respuesta['exception'] = $e->getMessage();
+            $respuesta['mensaje'] = 'Ocurrió una excepción en la operación hacia la base de datos';
+            $respuesta['error']   = true;
+            \Log::channel('error')->debug('QueryException ' . $e->getMessage());
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
+        }
+        catch (\Exception $e) {
+            $respuesta['exception'] = $e->getMessage();
+            $respuesta['mensaje'] = 'Ocurrió una excepción en la operación';
+            $respuesta['error'] = true;
+            \Log::channel('error')->debug('Exception ' . $e->getMessage());
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev' => $respuesta['exception']])->withInput();
         }
     }
-
     public function reactivar(Request $request,$id)
     {
-        $respuesta = Usuario::reactivarUsuario($id);
-        if ($respuesta['error'] == true){
-            if(!in_array('api',$request->route()->action['middleware']))
-                if(isset($respuesta['exception'])) return redirect()->back()->with('error', 'Ocurrió un problema al tratar de desactivar el usuario')->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
-                else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de desactivar el usuario');
-            else
-                return \Response::json(array(
-                    "data"=>null,
-                    "meta"=>array("msj"=>$respuesta['mensaje'],"exception"=> (isset($respuesta['exception'])? $respuesta['exception']:null )  )),  400);
-        }
-        else
-        {
-            $msj = 'El usuario se reactivó';
-            if(!in_array('api',$request->route()->action['middleware']))
-                return redirect($this->_url)->with('info', $msj);
-            else
-            {
-                if(Input::has('flash')) \Session::put('info', $msj);
-                return \Response::json(array(
-                    "data"=>array('Url'=>$this->_url),
-                    "meta"=>array("msj"=>$msj)), 200);
+        try {
+            if ($model = $this->repository->reactivate($id)) {
+                event(new \App\Events\EventUpdated(["Actividad"=>"reactivación de usuario","ItemId"=>$id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
+                $msj = 'El usuario se reactivó';
+                if(!in_array('api',$request->route()->action['middleware']))
+                    return redirect($this->_url)->with('info', $msj);
+                else
+                {
+                    if($request->has('flash')) \Session::put('info', $msj);
+                    return \Response::json(array(
+                        "data"=>array('Url'=>$this->_url),
+                        "meta"=>array("msj"=>$msj)), 200);
+                }
             }
+            else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de desactivar el usuario');
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            $respuesta['exception'] = $e->getMessage();
+            $respuesta['mensaje'] = 'Ocurrió una excepción en la operación hacia la base de datos';
+            $respuesta['error']   = true;
+            \Log::channel('error')->debug('QueryException ' . $e->getMessage());
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
+        }
+        catch (\Exception $e) {
+            $respuesta['exception'] = $e->getMessage();
+            $respuesta['mensaje'] = 'Ocurrió una excepción en la operación';
+            $respuesta['error'] = true;
+            \Log::channel('error')->debug('Exception ' . $e->getMessage());
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev' => $respuesta['exception']])->withInput();
         }
     }
-
     public function reasignar(Request $request,$id)
     {
-        $respuesta = Usuario::reasignarUsuario($id);
-        if ($respuesta['error'] == true){
-            if(!in_array('api',$request->route()->action['middleware']))
-                if(isset($respuesta['exception'])) return redirect()->back()->with('error', 'Ocurrió un problema al tratar de reasignar la contraseña del usuario')->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
-                else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de reasignar la contraseña del usuario');
-            else
-                return \Response::json(array(
-                    "data"=>null,
-                    "meta"=>array("msj"=>$respuesta['mensaje'],"exception"=> (isset($respuesta['exception'])? $respuesta['exception']:null )  )),  400);
-        }
-        else
-        {
-            $msj = 'La contraseña se reasignó';
-            if(!in_array('api',$request->route()->action['middleware']))
-                return redirect($this->_url)->with('info', $msj);
-            else
-            {
-                if(Input::has('flash')) \Session::put('info', $msj);
-                return \Response::json(array(
-                    "data"=>array('Url'=>$this->_url),
-                    "meta"=>array("msj"=>$msj)), 200);
+        try {
+            if ($model = $this->repository->reasign($id)) {
+                event(new \App\Events\EventUpdated(["Actividad"=>"reasignación de constraseña de usuario","ItemId"=>$id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
+                $msj = 'Se reasignó la contraseña del usuario';
+                if(!in_array('api',$request->route()->action['middleware']))
+                    return redirect($this->_url)->with('info', $msj);
+                else
+                {
+                    if($request->has('flash')) \Session::put('info', $msj);
+                    return \Response::json(array(
+                        "data"=>array('Url'=>$this->_url),
+                        "meta"=>array("msj"=>$msj)), 200);
+                }
             }
+            else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de reasignar contraseña del usuario');
         }
-    }*/
+        catch(\Illuminate\Database\QueryException $e){
+            $respuesta['exception'] = $e->getMessage();
+            $respuesta['mensaje'] = 'Ocurrió una excepción en la operación hacia la base de datos';
+            $respuesta['error']   = true;
+            \Log::channel('error')->debug('QueryException ' . $e->getMessage());
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev'=>$respuesta['exception']])->withInput();
+        }
+        catch (\Exception $e) {
+            $respuesta['exception'] = $e->getMessage();
+            $respuesta['mensaje'] = 'Ocurrió una excepción en la operación';
+            $respuesta['error'] = true;
+            \Log::channel('error')->debug('Exception ' . $e->getMessage());
+            return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev' => $respuesta['exception']])->withInput();
+        }
+    }
 
     /*Otras funciones*/
     public function getUserName($nombre,$apellidos, $estudiante=false)
@@ -259,5 +277,14 @@ class UsuarioController extends Controller
             $extra += 1;
         }
         return $user;
+    }
+
+    /*Funciones para API*/
+    public function getUsuariosAPI(Request $request)
+    {
+        $params = $request->all();
+        $data = $this->repository->search($params, true);
+        $serialized = \App\Utils\Serializer::serializeArray($data, new \miudl\Usuario\UsuarioTransformer);
+        return \Response::json($serialized,200);
     }
 }

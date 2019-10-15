@@ -21,8 +21,7 @@ class TrabajadorController extends Controller
 
     public function index()
     {
-        $trabajadores = $this->repository->search([], true);
-        return view('rrhh.trabajadores.index',array("trabajadores"=>$trabajadores));
+        return view('rrhh.trabajadores.index');
     }
 
     public function create()

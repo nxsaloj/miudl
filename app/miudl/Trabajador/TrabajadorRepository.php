@@ -34,13 +34,14 @@ class TrabajadorRepository extends BaseRepository implements TrabajadorRepositor
         $filtro = isset($params['filtro'])? $params['filtro']:null;
         //Query
 
-        $data = $this->getModel()->whereNull($this->getModel()->getTable().'.Deleted_at')->join('TB_PuestoTrabajo','TB_PuestoTrabajo.id',$this->getModel()->getTable().'.id');
+        $data = $this->getModel()->whereNull($this->getModel()->getTable().'.Deleted_at')->join('TB_PuestoTrabajo','TB_PuestoTrabajo.id',$this->getModel()->getTable().'.PuestoTrabajo_id');
         //Filtrar por like
         if($filtro)
         {
             $data = $data->where( function ( $query ) use ($filtro)
             {
-                $query->where($this->getModel()->getTable().'.Nombre','like','%'.$filtro.'%')->orWhere($this->getModel()->getTable().'.Codigo',$filtro);
+                $query->where($this->getModel()->getTable().'.Nombre','like','%'.$filtro.'%')->orWhere($this->getModel()->getTable().'.Codigo',$filtro)
+                ->orWhere('TB_PuestoTrabajo.Nombre','like','%'.$filtro.'%');
             });
         }
 
@@ -62,7 +63,21 @@ class TrabajadorRepository extends BaseRepository implements TrabajadorRepositor
     public function create(array $params)
     {
         $model = $this->getModel($params);
-        if($model->save()) return $model;
+
+        \DB::beginTransaction();
+
+        $usuario = new \miudl\Usuario\Usuario();
+        $usuario->Usuario = \miudl\Usuario\Usuario::getUserName($model->Nombre, $model->Apellidos);
+        $usuario->password = \Hash::make(\miudl\Usuario\Usuario::getDefault());
+
+        if(!$usuario->save()) return false;
+
+        $model->Usuario_id = $usuario->id;
+        if($model->save())
+        {
+            \DB::commit();
+            return $model;
+        }
 
         return false;
     }

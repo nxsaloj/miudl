@@ -76,21 +76,21 @@ class SeccionesSeeder extends Seeder
             ),
             array('id'=>'gestiones',
                 'Nombre' => 'Gestiones',
-                'Icono' => 'mdi mdi-check',
+                'Icono' => 'mdi mdi-book-open',
                 'Url' => '',
                 'idPadre' => 'seccion_administracion',
                 'Prioridad' => 4
             ),
             array('id'=>'inscripcion',
                 'Nombre' => 'Inscripción',
-                'Icono' => 'mdi mdi-library',
+                'Icono' => 'mdi mdi-clipboard-account',
                 'Url' => 'inscripcion',
                 'idPadre' => 'gestiones',
                 'Prioridad' => 1
             ),
             array('id'=>'matriculacion',
                 'Nombre' => 'Matriculación',
-                'Icono' => 'mdi mdi-library',
+                'Icono' => 'mdi mdi-clipboard-check',
                 'Url' => 'matriculacion',
                 'idPadre' => 'gestiones',
                 'Prioridad' => 2
@@ -118,16 +118,23 @@ class SeccionesSeeder extends Seeder
                 'idPadre' => 'seccion_finanzas',
                 'Prioridad' => 1
             ),
+            array('id'=>'seccion_gestion_pagos',
+                'Nombre' => 'Gestión de pagos',
+                'Icono' => 'mdi mdi-cash-multiple',
+                'Url' => 'cuentas',
+                'idPadre' => 'seccion_finanzas',
+                'Prioridad' => 2
+            ),
             array('id'=>'registrar_pagos',
                 'Nombre' => 'Registrar pagos',
-                'Icono' => 'mdi mdi-view-dashboard-variant',
+                'Icono' => 'mdi mdi-cash',
                 'Url' => 'registrar_pagos',
                 'idPadre' => 'seccion_gestion_pagos',
                 'Prioridad' => 1
             ),
             array('id'=>'historial_pagos',
                 'Nombre' => 'Historial de pagos',
-                'Icono' => 'mdi mdi-view-dashboard-variant',
+                'Icono' => 'mdi mdi-history',
                 'Url' => 'historial_pagos',
                 'idPadre' => 'seccion_gestion_pagos',
                 'Prioridad' => 2
@@ -135,14 +142,14 @@ class SeccionesSeeder extends Seeder
             //Educación
             array('id'=>'seccion_centros_universitarios',
                 'Nombre' => 'Centros universitarios',
-                'Icono' => 'mdi mdi-rotate-right-variant',
+                'Icono' => 'mdi mdi-domain',
                 'Url' => 'centros_universitarios',
                 'idPadre' => 'seccion_educacion',
                 'Prioridad' => 0
             ),
             array('id'=>'seccion_facultades',
                 'Nombre' => 'Facultades',
-                'Icono' => 'mdi mdi-rotate-right-variant',
+                'Icono' => 'mdi mdi-bank',
                 'Url' => 'facultades',
                 'idPadre' => 'seccion_educacion',
                 'Prioridad' => 1

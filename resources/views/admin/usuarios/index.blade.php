@@ -1,4 +1,4 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 @section('content')
 
 <div class="vue-usuarios">
@@ -11,11 +11,11 @@
         @endphp
         <toastel :mensaje="{{$toast}}"></toastel>
     @endif
-    
+
     <div class="row grid-margin" v-if="show">
     <div class="col-12">
         <div class="card">
-            <div class="card-body">         
+            <div class="card-body">
                 <div class="form-group form-group-search d-flex search-field">
                     <input type="text" class="form-control " v-model="filtro" name="usuario" placeholder="Busca un usuario" v-on:keyup.enter="getUsuarios()">
                     <button class="btn btn-primary ml-3" @click.prevent="getUsuarios()">Buscar</button>
@@ -38,25 +38,21 @@
                         <div class="tablavue tablavue-header">
                             <div class="item-row">
                                 <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Usuario')">Usuario <i v-if="orderby.field == 'Usuario'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
-                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Empleado')">Miembro de equipo <i v-if="orderby.field == 'Empleado'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
-                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Estudiante')">Estudiante <i v-if="orderby.field == 'Estudiante'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
+                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Trabajador')">Trabajador <i v-if="orderby.field == 'Empleado'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
                                 <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Deactivated_at')">Activo <i v-if="orderby.field == 'Deactivated_at'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
                                 <div class="item-col"><span class="item-tag"></span></div>
-                            </div>                            
+                            </div>
                         </div>
 
                         <div class="tablavue">
                             <div class="item-row" v-for="(usuario, index) in usuarios">
                                 <div class="item-col">
                                     <span class="item-title">Usuario: </span>
-                                    <span class="item-tag">@{{usuario.Usuario}}</span></div>
-                                <div class="item-col">
-                                    <span class="item-title">Miembro de equipo: </span>
-                                    <span class="item-tag">@{{(usuario.Empleado)? usuario.Empleado.Nombre+' '+usuario.Empleado.Apellidos:'-'}}</span>
+                                    <span class="item-tag">@{{usuario.Usuario}}</span>
                                 </div>
                                 <div class="item-col">
-                                    <span class="item-title">Estudiante: </span>
-                                    <span class="item-tag">@{{(usuario.Estudiante)? usuario.Estudiante.Nombre+' '+usuario.Estudiante.Apellidos:'-'}}</span>
+                                    <span class="item-title">Trabajador: </span>
+                                    <span class="item-tag">@{{(usuario.Trabajador)? usuario.Trabajador.Nombre:'-'}}</span>
                                 </div>
                                 <div class="item-col">
                                     <span class="item-tag">
@@ -68,14 +64,14 @@
                                     <span class="item-tag">
                                         <a href="#"class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Acciones </a>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" :href="url+usuario.Usuario_id">Ver detalles</a>
+                                            <a class="dropdown-item" :href="url+usuario.id">Ver detalles</a>
                                             <a class="dropdown-item" @click.prevent="confirmReset(usuario)">Reasignar contraseña</a>
                                             <a v-if="usuario.Deactivated_at" class="dropdown-item" @click.prevent="confirmDeactivate(usuario)">Reactivar</a>
                                             <a v-else class="dropdown-item" @click.prevent="confirmDeactivate(usuario)">Desactivar</a>
                                         </div>
                                     </span>
                                 </div>
-                            </div>     
+                            </div>
                         </div>
                     </template>
                 </div>
