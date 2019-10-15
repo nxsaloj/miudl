@@ -33,7 +33,7 @@ class PuestoTrabajoSeeder extends Seeder
             array(
                 'id'=>4,
                 'Codigo' => 'PTCO-002',
-                'Nombre' => 'Contabiliadd'
+                'Nombre' => 'Contabilidad'
             ),
             array(
                 'id'=>5,

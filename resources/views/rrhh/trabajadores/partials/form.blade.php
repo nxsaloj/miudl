@@ -7,69 +7,52 @@
     <div class="card">
         <div class="card-body">
             @php
-                $current_url = Request::url();
-                if($session = Session::get('keep_session')) if($origin = $session['dest']) if(strpos($current_url, $origin) !== false) $gyc = true;
                 if(!isset($edit))
                 {
-                    $empleado = new \App\Generic;
-                    $empleado->Codigo = null;
-                    $empleado->Nombre = null;
-                    $empleado->Apellidos = null;
-                    $empleado->PuestoTrabajo_id = null;
-                }
-                if(session()->has('empleado'))
-                {
-                    $empleado_s = session()->get('empleado');
-                    $empleado = new \App\Generic;
-                    $empleado->Empleado_id = $empleado_s['id'];
-                    $empleado->Codigo = $empleado_s['codigo'];
-                    $empleado->Nombre = $empleado_s['nombre'];
-                    $empleado->Apellidos = $empleado_s['apellidos'];
-                    $empleado->PuestoTrabajo_id = isset($empleado_s['puesto'])? $empleado_s['puesto']:null;
+                    $trabajador = new \miudl\Base\BaseModel;
+                    $trabajador->Codigo = null;
+                    $trabajador->Nombre = null;
+                    $trabajador->Apellidos = null;
+                    $trabajador->FechaNacimiento = null;
+                    $trabajador->PuestoTrabajo_id = null;
                 }
             @endphp
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Código de empleado:</label>
+                <label class="col-sm-4 col-form-label">Código de trabajador:</label>
                 <div class="col-sm-4">
-                    <input type="text" name="codigo" class="form-control p-input" value="{{ old('codigo', $empleado->Codigo) }}" placeholder="Código">
+                    <input type="text" name="codigo" class="form-control p-input" value="{{ old('codigo', $trabajador->Codigo) }}" placeholder="Código">
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Nombre</label>
                 <div class="col-sm-8">
-                    <input type="text" name="nombre" class="form-control p-input" value="{{ old('nombre', $empleado->Nombre) }}" placeholder="Nombre">
+                    <input type="text" name="nombre" class="form-control p-input" value="{{ old('nombre', $trabajador->Nombre) }}" placeholder="Nombre">
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Apellidos</label>
                 <div class="col-sm-8">
-                    <input type="text" name="apellidos" class="form-control p-input" value="{{ old('apellidos', $empleado->Apellidos) }}" placeholder="Apellidos">
+                    <input type="text" name="apellidos" class="form-control p-input" value="{{ old('apellidos', $trabajador->Apellidos) }}" placeholder="Apellidos">
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Puesto de Trabajo</label>
                 <div class="col-sm-8">
-                    @php 
-                        $id = (old('puesto') != null)? old('puesto'):$empleado->PuestoTrabajo_id; 
-                        if($id != null) $puesto = \App\Models\RRHH\PuestoTrabajo::getPuestoTrabajo($id); 
+                    @php
+                        $id = (old('puesto') != null)? old('puesto'):$trabajador->PuestoTrabajo_id;
+                        //if($id != null) $puesto = new \App\Http\Controllers\PuestoTrabajoController()->getPuestoTrabajo($id);
                     @endphp
                     @if(isset($puesto))
                         <input type="hidden" id="puestohidden" value="{{ $puesto->Nombre }}">
                     @endif
-                    <input type="hidden" v-if="puesto" v-model="puesto.PuestoTrabajo_id" name="puesto" value="{{ old('puesto', $empleado->PuestoTrabajo_id) }}">
+                    <input type="hidden" v-if="puesto" v-model="puesto.id" name="puesto" value="{{ old('puesto', $trabajador->PuestoTrabajo_id) }}">
                     <v-select label="Nombre" :filterable="false" :options="puestos" @search="getPuestosTrabajo" v-model="puesto" :placeholder="'Puesto de trabajo'">
                         <slot name="spinner">
                             <div class="spinner">Espere...</div>
                         </slot>
-                        @if(!isset($gyc))
-                            <div slot="no-options" @click.prevent="session_keep('/rrhh/puestos')">
-                                <span>Crear puesto...</span>
-                            </div>
-                        @else
-                            <template slot="no-options">
-                                Buscar puesto...
-                            </template>
-                        @endif
+                        <template slot="no-options">
+                            Buscar puesto...
+                        </template>
                         <template slot="option" slot-scope="option">
                             <div class="d-center">
                                 @{{ option.Nombre }}
@@ -80,24 +63,19 @@
                                 @{{ option.Nombre }}
                             </div>
                         </template>
-                    </v-select>                   
+                    </v-select>
                 </div>
             </div>
-            
-            
+
+
         </div>
         <div class="card-footer">
-            @if(isset($gyc))
-                <button type="submit" class="btn btn-primary submit">Guardar y continuar</button>
-                <a href="{{ url('cancellsession') }}" class="btn btn-primary">Cancelar</a>
+            <button type="submit" class="btn btn-primary submit">Guardar</button>
+            @if(isset($edit))
+                <a href="" @click.prevent="confirmDialog({{$trabajador}}, $event)" class="btn btn-danger">Eliminar</a>
+                <a href="../" class="btn btn-primary">Cancelar</a>
             @else
-                <button type="submit" class="btn btn-primary submit">Guardar</button>
-                @if(isset($edit))
-                    <a href="" @click.prevent="confirmDialog({{$empleado}}, $event)" class="btn btn-danger">Eliminar</a>
-                    <a href="../" class="btn btn-primary">Cancelar</a>
-                @else
-                    <a href="./" class="btn btn-primary">Cancelar</a>
-                @endif             
+                <a href="./" class="btn btn-primary">Cancelar</a>
             @endif
         </div>
     </div>

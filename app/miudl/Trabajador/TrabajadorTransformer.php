@@ -1,8 +1,10 @@
 <?php
 
-namespace miudl\Seccion;
+namespace miudl\Trabajador;
 
-class SeccionAppTransformer extends \App\Utils\BaseSerializer
+use miudl\PuestoTrabajo\PuestoTrabajo;
+
+class TrabajadorTransformer extends \App\Utils\BaseSerializer
 {
     public $permitido = null;
     public $extra = false;
@@ -17,13 +19,11 @@ class SeccionAppTransformer extends \App\Utils\BaseSerializer
     public function transform($data)
     {
         $values = array(
-            'SeccionApp_id'      => $data->SeccionApp_id,
+            'id'      => $data->id,
+            'Codigo'      => $data->Codigo,
             'Nombre'      => $data->Nombre,
-            'Icono'      => $data->Icono,
-            'Url'      => $data->Url,
-            'Prioridad'      => $data->Prioridad,
-            'Extra'      => $data->Extra,
-            'SeccionApp_idPadre'      => $data->SeccionApp_idPadre,
+            'Apellidos'      => $data->Apellidos,
+            'PuestoTrabajo'      => ($data->PuestoTrabajo_id)? new PuestoTrabajo(array("id"=>$data->PuestoTrabajo_id,"Nombre"=>$data->PuestoTrabajo_Nombre)):null,
             'Deleted_at'   => $data->Deleted_at,
             'created_at'   => $data->created_at,
             'updated_at'   => $data->updated_at

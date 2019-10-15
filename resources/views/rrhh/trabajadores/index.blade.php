@@ -28,9 +28,6 @@
     <div class="form-group">
         <a href=" {{ route('trabajadores.create') }}  " class="btn btn-success" style="margin: 10px 0; ">Agregar nuevo trabajador</a>
         <a href="#" @click.prevent="show = !show" class="btn btn-primary mdi-reduce-padding"><i class="mdi mdi-magnify mdi-18px"></i></a>
-
-        <a href="{{ route('trabajadores.showimport') }}" class="btn btn-outline-primary"><i class="mdi mdi-upload btn-label btn-label-left" ></i>Importar</a>
-        <a href="{{ route('trabajadores.export') }}" target="_blank" class="btn btn-outline-success"><i class="mdi mdi-download btn-label btn-label-left" ></i>Exportar</a>
     </div>
 
     <div class="row">

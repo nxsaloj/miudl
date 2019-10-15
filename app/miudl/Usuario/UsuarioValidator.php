@@ -25,7 +25,7 @@ class UsuarioValidator implements UsuarioValidatorInterface
         );
         $datos = array(
             'Usuario' => $params['Usuario'],
-            'password' => Hash::make($params['password'])
+            'password' => $params['password']
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);
@@ -68,15 +68,13 @@ class UsuarioValidator implements UsuarioValidatorInterface
     public function isValidUpdate(array $params, $id)
     {
         $reglas =  array(
-            'Codigo' => 'required|unique:TB_Usuario,Codigo,'.$id.',Usuario_id',
-            'Nombre' => 'required',
-            'PuestoTrabajo_id' => 'required'
+            'Usuario' => 'required|unique:TB_Usuario,Usuario,'.$id.',id',
+            'password' => 'required'
         );
 
         $datos = array(
-            'Codigo' => $params['codigo'],
-            'Nombre' => $params['nombre'],
-            'Apellidos' => $params['apellidos']
+            'Usuario' => $params['Usuario'],
+            'password' => $params['password']
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);

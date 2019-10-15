@@ -3,3 +3,4 @@ import filters from './vue/components/filters'
 
 //RRHH
 import puestos from './vue/paginas/rrhh/puestos'
+import trabajadores from './vue/paginas/rrhh/trabajadores'

@@ -10,7 +10,7 @@ class PuestoTrabajo extends BaseModel
 
     protected $table = 'TB_PuestoTrabajo';
 	public $primaryKey = 'id';
-    protected $fillable = ['Codigo','Nombre','Deleted_at'];
+    protected $fillable = ['id','Codigo','Nombre','Deleted_at'];
     public $timestamps = true;
 
 }

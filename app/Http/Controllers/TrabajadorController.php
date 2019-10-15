@@ -3,31 +3,31 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use miudl\PuestoTrabajo\PuestoTrabajoRepositoryInterface;
-use miudl\PuestoTrabajo\PuestoTrabajoValidatorInterface;
+use miudl\Trabajador\TrabajadorRepositoryInterface;
+use miudl\Trabajador\TrabajadorValidatorInterface;
 
-class PuestoTrabajoController extends Controller
+class TrabajadorController extends Controller
 {
     protected $repository;
     protected $validator;
-    public function __construct(PuestoTrabajoRepositoryInterface $_repository, PuestoTrabajoValidatorInterface $_validator)
+    public function __construct(TrabajadorRepositoryInterface $_repository, TrabajadorValidatorInterface $_validator)
     {
         $this->repository = $_repository;
         $this->validator = $_validator;
     }
 
-    protected $_url = '/rrhh/puestos';
+    protected $_url = '/rrhh/trabajadores';
 
 
     public function index()
     {
-        $puestos = $this->repository->search([], true);
-        return view('rrhh.puestos.index',array("puestos"=>$puestos));
+        $trabajadores = $this->repository->search([], true);
+        return view('rrhh.trabajadores.index',array("trabajadores"=>$trabajadores));
     }
 
     public function create()
     {
-        return view('rrhh.puestos.create');
+        return view('rrhh.trabajadores.create');
     }
 
     public function store(Request $request)
@@ -41,8 +41,8 @@ class PuestoTrabajoController extends Controller
                 if ($this->repository->isDeleted($data)) $this->repository->reactivate($data);
                 else {
                     if ($model = $this->repository->create($data)) {
-                        event(new \App\Events\EventInserted(["Actividad"=>"registro de puesto de trabajo","ItemId"=>$model->id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
-                        return redirect($this->_url)->with('info', 'El puesto de trabajo se ha creado de forma exitosa');
+                        event(new \App\Events\EventInserted(["Actividad"=>"registro de trabajador","ItemId"=>$model->id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
+                        return redirect($this->_url)->with('info', 'El trabajador se ha creado de forma exitosa');
                     }
                 }
             }
@@ -67,8 +67,8 @@ class PuestoTrabajoController extends Controller
 
     public function edit($id)
     {
-        $puestotrabajo = $this->repository->findOrFail($id);
-        return view('rrhh.puestos.edit', array("puesto"=>$puestotrabajo));
+        $trabajador = $this->repository->findOrFail($id);
+        return view('rrhh.trabajadores.edit', array("trabajador"=>$trabajador));
     }
 
 
@@ -82,8 +82,8 @@ class PuestoTrabajoController extends Controller
             $respuesta = [];
             try {
                 if ($model = $this->repository->update($id, $data)) {
-                    event(new \App\Events\EventUpdated(["Actividad"=>"actualización de puesto de trabajo","ItemId"=>$id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
-                    return redirect($this->_url)->with('info', 'El puesto de trabajo se ha modificado de forma exitosa');
+                    event(new \App\Events\EventUpdated(["Actividad"=>"actualización de trabajador","ItemId"=>$id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
+                    return redirect($this->_url)->with('info', 'El trabajador se ha modificado de forma exitosa');
                 }
             }
             catch(\Illuminate\Database\QueryException $e){
@@ -110,8 +110,8 @@ class PuestoTrabajoController extends Controller
     {
         try {
             if ($model = $this->repository->delete($id)) {
-                event(new \App\Events\EventDeleted(["Actividad"=>"eliminación de puesto de trabajo","ItemId"=>$id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
-                $msj = 'El puesto de trabajo se eliminó';
+                event(new \App\Events\EventDeleted(["Actividad"=>"eliminación de trabajador","ItemId"=>$id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
+                $msj = 'El trabajador se eliminó';
                 if(!in_array('api',$request->route()->action['middleware']))
                     return redirect($this->_url)->with('info', $msj);
                 else
@@ -122,7 +122,7 @@ class PuestoTrabajoController extends Controller
                         "meta"=>array("msj"=>$msj)), 200);
                 }
             }
-            else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de eliminar el puesto de trabajo');
+            else return redirect($this->_url)->with('error', 'Ocurrió un problema al tratar de eliminar el trabajador');
         }
         catch(\Illuminate\Database\QueryException $e){
             $respuesta['exception'] = $e->getMessage();
@@ -139,18 +139,17 @@ class PuestoTrabajoController extends Controller
             return redirect()->back()->with('error', $respuesta['mensaje'])->withErrors(['exception_dev' => $respuesta['exception']])->withInput();
         }
     }
-    public function getPuestoTrabajoAPI($id)
+    public function getTrabajadorAPI($id)
     {
         $data = $this->repository->findOrFail($id);
         return $data;
     }
     /*Funciones para API*/
-    public function getPuestosTrabajoAPI(Request $request)
+    public function getTrabajadoresAPI(Request $request)
     {
         $params = $request->all();
         $data = $this->repository->search($params, true);
-        $serialized = \App\Utils\Serializer::serializeArray($data, new \miudl\PuestoTrabajo\PuestoTrabajoTransformer);
+        $serialized = \App\Utils\Serializer::serializeArray($data, new \miudl\Trabajador\TrabajadorTransformer);
         return \Response::json($serialized,200);
     }
-
 }
