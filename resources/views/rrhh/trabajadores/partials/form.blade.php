@@ -36,11 +36,18 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Fecha de nacimiento</label>
+                <div class="col-sm-8">
+                    <input type="date" name="fechanacimiento" class="form-control p-input" value="{{ old('fechanacimiento', \Carbon\Carbon::parse($trabajador->FechaNacimiento)->format('Y-m-d')) }}" placeholder="Fecha de nacimiento">
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Puesto de Trabajo</label>
                 <div class="col-sm-8">
                     @php
                         $id = (old('puesto') != null)? old('puesto'):$trabajador->PuestoTrabajo_id;
-                        //if($id != null) $puesto = new \App\Http\Controllers\PuestoTrabajoController()->getPuestoTrabajo($id);
+                        if($id != null) $puesto = resolve('\App\Http\Controllers\PuestoTrabajoController')->getPuestoTrabajoAPI($id);
                     @endphp
                     @if(isset($puesto))
                         <input type="hidden" id="puestohidden" value="{{ $puesto->Nombre }}">

@@ -65,6 +65,32 @@ class UsuarioValidator implements UsuarioValidatorInterface
         return $datos;
     }
 
+    public function isValidChange(array $params= array())
+    {
+        $reglas =  array(
+            'password' => 'required',
+            'newpassword' => 'required|confirmed|min:6',
+            'newpassword_confirmation' => 'required',
+        );
+
+        $datos = array(
+            'password' => $params['password'],
+            'newpassword' => $params['newpassword'],
+            'newpassword_confirmation' => $params['newpasswordr'],
+        );
+
+        $validator = Validator::make($datos, $reglas, $this->mensajes);
+
+        if ($validator->fails()){
+            $respuesta['mensaje'] = 'Por favor verifique los datos ingresados';
+            $respuesta['errors'] = $validator;
+            $respuesta['error']   = true;
+            return $respuesta;
+        }
+
+        return $datos;
+    }
+
     public function isValidUpdate(array $params, $id)
     {
         $reglas =  array(

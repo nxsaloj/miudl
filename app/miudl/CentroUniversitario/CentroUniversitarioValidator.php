@@ -1,10 +1,10 @@
 <?php
 
-namespace miudl\Trabajador;
+namespace miudl\CentroUniversitario;
 
 use Validator;
 
-class TrabajadorValidator implements TrabajadorValidatorInterface
+class CentroUniversitarioValidator implements CentroUniversitarioValidatorInterface
 {
     protected $mensajes = array(
         'Nombre.required' => 'El campo Nombre no debe estar vacío',
@@ -17,8 +17,7 @@ class TrabajadorValidator implements TrabajadorValidatorInterface
     {
         $reglas =  array(
             'Codigo' => 'required|unique:TB_Trabajador',
-            'Nombre' => 'required',
-            'PuestoTrabajo_id' => 'required'
+            'Nombre' => 'required'
         );
         //\Log::debug('Puesto P ' . print_r($params['puesto'], true));
         //$puesto = \App\Models\Utils::getVueParam($params,"puesto","PuestoTrabajo_id");
@@ -26,9 +25,7 @@ class TrabajadorValidator implements TrabajadorValidatorInterface
         $datos = array(
             'Codigo' => $params['codigo'],
             'Nombre' => $params['nombre'],
-            'Apellidos' => $params['apellidos'],
-            'FechaNacimiento'=>$params['fechanacimiento'],
-            'PuestoTrabajo_id' => isset($params['puesto'])? $params['puesto']:null,
+            'Direccion'=> $params['direccion']
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);
@@ -47,16 +44,13 @@ class TrabajadorValidator implements TrabajadorValidatorInterface
     {
         $reglas =  array(
             'Codigo' => 'required|unique:TB_Trabajador,Codigo,'.$id.',id',
-            'Nombre' => 'required',
-            'PuestoTrabajo_id' => 'required'
+            'Nombre' => 'required'
         );
 
         $datos = array(
             'Codigo' => $params['codigo'],
             'Nombre' => $params['nombre'],
-            'Apellidos' => $params['apellidos'],
-            'FechaNacimiento'=>$params['fechanacimiento'],
-            'PuestoTrabajo_id' => isset($params['puesto'])? $params['puesto']:null,
+            'Direccion'=> $params['direccion']
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);

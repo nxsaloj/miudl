@@ -32,7 +32,7 @@ Route::get('/logout', function(){
 Route::group(['middleware' => ['auth','checkAuth','pre.page']], function () {
     Route::get('/change', 'MainController@viewChange');
     Route::get('/cambiarpass', 'MainController@viewCambiar');
-    Route::post('/change', 'MainController@change')->name('change');
+    Route::post('/change', 'UsuarioController@change')->name('change');
 
     Route::get('/', 'PuestoTrabajoController@index')->name('index');
     //Administracion
@@ -41,6 +41,11 @@ Route::group(['middleware' => ['auth','checkAuth','pre.page']], function () {
         //Route::resource('/permisos', 'PermisoController')->except(['show']);
         //Route::get('/logs', 'LogController@showLogs');
     });
+    Route::group(['prefix' => '/educacion'], function() {
+        Route::resource('/centrosuniversitarios', 'CentroUniversitarioController')->except(['show']);
+        Route::resource('/facultades', 'FacultadController')->except(['show']);
+    });
+
     //Recursos Humanos
     Route::group(['prefix' => '/rrhh'], function () {
         Route::resource('/puestos', 'PuestoTrabajoController')->except(['show']);

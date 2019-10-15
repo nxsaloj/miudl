@@ -44,17 +44,25 @@ class UsuarioController extends Controller
     }
 
     public function change(Request $request){
-        if(Auth::check())
+        if(\Auth::check())
         {
-            $user = Auth::user();
+            $user = \Auth::user();
             if($user->Changed_at == null)
             {
                 $data = $request->all();
-                $respuesta = $this->repository->change($user->id, $data);
-                if ($respuesta['error'] == true){
-                    $errors = isset($respuesta['errors'])? ($respuesta['errors']):null;
-                    return redirect()->back()->with('no_login', $respuesta['mensaje'])->withErrors($errors);
+                $respuesta = $this->validator->isValidChange($data);
+                if (!isset($respuesta['error'])) {
+                    $data = $respuesta;
+                    $respuesta = $this->repository->change($user->id, $data);
+                    if ($respuesta['error'] == true){
+                        $errors = isset($respuesta['errors'])? ($respuesta['errors']):null;
+                        return redirect()->back()->with('no_login', $respuesta['mensaje'])->withErrors($errors);
+                    }
                 }
+                else {
+                    return redirect()->back()->with('no_login', $respuesta['mensaje'])->withErrors($respuesta['errors'])->withInput();
+                }
+
                 return redirect('/logout');
             }
             else abort(404);

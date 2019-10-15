@@ -7,9 +7,9 @@ import vSelect from 'vue-select'
 
 Vue.component('v-select', vSelect)
 
-if(document.getElementsByClassName("vue-trabajadores").length > 0){
-    var vue_emp = new Vue({
-        el: ".vue-trabajadores",
+if(document.getElementsByClassName("vue-centrosuniversitarios").length > 0){
+    new Vue({
+        el: ".vue-centrosuniversitarios",
         components: {
             paginador,
             toastel
@@ -17,10 +17,9 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
         data :
         {
             api_url:'/api/v1',
-            url:'/rrhh/trabajadores/',
+            url:'/educacion/centrosuniversitarios/',
             show:false,
             showextra:false,
-            trabajadores:[],
             pagination:{
                 "current_page":0,
                 "last_page":0,
@@ -32,79 +31,56 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
                 "field":'Nombre',
                 "type":true
             },
-            filtro:null,
-            filtropuesto:"",
-            puestos:[],
-            puesto: (document.getElementById("puestohidden"))? {"id":$('input[name=puesto]').val(),"Nombre":$('input#puestohidden').val()}:null
+            filtro:"",
+            centrosuniversitarios:[]
         },
         methods: {
             //Métodos HTTP
-            getTrabajadores: function() {
+            limpiar(){
+                this.filtro = "";
+                this.getCentrosUniversitariosTrabajo();
+            },
+            getCentrosUniversitariosTrabajo: function(filter=null,loading=null) {
+                if(loading) loading(true);
                 var url = this.api_url+this.url;
                 axios.get(url, {
-                    params: this.getParametros()
-                  }).then(response => {
+                    params: this.getParametros(filter, (loading != null))
+                }).then(response => {
                     var data = response.data;
                     if(data)
                     {
-                        this.trabajadores =  data.data;
+                        this.centrosuniversitarios =  data.data;
                         this.pagination = data;
                         delete this.pagination.data;
+                        if(loading) loading(false);
                     }
                 });
             },
-            eliminarTrabajador: function(trabajador,$event=null) {
-                var url = this.api_url+this.url+trabajador.id;
+            eliminarCentroUniversitarioTrabajo: function(centrouniversitario,$event=null) {
+                var url = this.api_url+this.url+centrouniversitario.id;
 
                 axios.delete(url+(($event)? "?flash=true":"")).then(response => {
                     var data = response.data;
                     if($event) window.location = data.data.Url.replace("api/v1/","");
                     else
                     {
-                        this.getTrabajadores();
+                        this.getCentrosUniversitariosTrabajo();
                         this.showToast("Eliminado",data.meta.msj,"success");
                     }
                 });
             },
-            getPuestosTrabajo: function(filter, loading) {
-                this.puestos =[];
-                if(filter)
-                {
-                    loading(true);
-                    var url = this.api_url+'/rrhh/puestos';
-                    axios.get(url, {
-                        params: {"filtro":filter,"por_pagina":-1}
-                    }).then(response => {
-                        var data = response.data;
-                        if(data)
-                        {
-                            loading(false);
-                            this.puestos =  data.data;
-                        }
-                    });
-                }
-            },
-            setPuesto(){
-                var id = (this.puesto)? this.puesto.id:null;
-                $("input[name='puesto']").val(id);
-                this.puestos =[];
-            },
             //Funciones
-            limpiar(){
-                this.filtro = "";
-                this.filtrodepartamento = "";
-            },
             getParametros:function(){
                 var params = {'orderby': this.getOrderBy()};
                 if(this.pagination.current_page > 0) params['page'] = this.pagination.current_page;
                 if(this.filtro) params['filtro'] = this.filtro;
                 return params;
             },
-            confirmDialog(trabajador, $event=null)
+            confirmDialog(centrouniversitario, $event=null)
             {
                 Swal({
                     title: 'Confirmación',
-                    text: "¿Desea eliminar al trabajador "+trabajador.Nombre+"?",
+                    text: "¿Desea eliminar el centrouniversitario "+centrouniversitario.Nombre+"?",
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Eliminar',
@@ -112,11 +88,11 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
                     animation: false
                   }).then((result) => {
                     if (result.value) {
-                        this.eliminarTrabajador(trabajador,$event);
+                        this.eliminarCentroUniversitarioTrabajo(centrouniversitario, $event);
                     }
                   })
             },
-            showToast(title, text="El trabajador se eliminó", icon,color){
+            showToast(title, text="El centrouniversitario se eliminó", icon,color){
                 $.toast({
                     heading: title,
                     text: text,
@@ -129,13 +105,13 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
                 });
             },
             cambiarPagina: function(){
-                this.getTrabajadores();
+                this.getCentrosUniversitariosTrabajo();
             },
             toggleOrderBy:function(field)
             {
                 this.orderby.type = (field == this.orderby.field)? !this.orderby.type:true;
                 this.orderby.field = field;
-                this.getTrabajadores();
+                this.getCentrosUniversitariosTrabajo();
             },
             getOrderBy:function(){
                 return [this.orderby.field, this.orderby.type];
@@ -149,7 +125,7 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
             }
         },
         created: function () {
-            if(document.getElementsByClassName("vue-trabajadores-detail").length <= 0) this.getTrabajadores();
+            if(document.getElementsByClassName("vue-centrosuniversitarios-create").length <= 0 && document.getElementsByClassName("vue-centrosuniversitarios-detail").length <= 0) this.getCentrosUniversitariosTrabajo();
         }
     });
 }

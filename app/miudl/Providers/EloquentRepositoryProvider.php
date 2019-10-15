@@ -39,5 +39,21 @@ class EloquentRepositoryProvider extends ServiceProvider{
             'miudl\Trabajador\TrabajadorValidatorInterface',
             'miudl\Trabajador\TrabajadorValidator'
         );
+        $this->app->bind(
+            'miudl\CentroUniversitario\CentroUniversitarioRepositoryInterface',
+            'miudl\CentroUniversitario\CentroUniversitarioRepository'
+        );
+        $this->app->bind(
+            'miudl\CentroUniversitario\CentroUniversitarioValidatorInterface',
+            'miudl\CentroUniversitario\CentroUniversitarioValidator'
+        );
+        $this->app->bind(
+            'miudl\Facultad\FacultadRepositoryInterface',
+            'miudl\Facultad\FacultadRepository'
+        );
+        $this->app->bind(
+            'miudl\Facultad\FacultadValidatorInterface',
+            'miudl\Facultad\FacultadValidator'
+        );
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace miudl\Trabajador;
+namespace miudl\Facultad;
 
-interface TrabajadorRepositoryInterface
+interface FacultadRepositoryInterface
 {
     public function findOrFail($id);
     public function search(array $params = array(), $paginate = false);

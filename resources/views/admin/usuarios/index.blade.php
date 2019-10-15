@@ -38,7 +38,7 @@
                         <div class="tablavue tablavue-header">
                             <div class="item-row">
                                 <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Usuario')">Usuario <i v-if="orderby.field == 'Usuario'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
-                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Trabajador')">Trabajador <i v-if="orderby.field == 'Empleado'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
+                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Trabajador')">Trabajador <i v-if="orderby.field == 'Trabajador'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
                                 <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Deactivated_at')">Activo <i v-if="orderby.field == 'Deactivated_at'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
                                 <div class="item-col"><span class="item-tag"></span></div>
                             </div>

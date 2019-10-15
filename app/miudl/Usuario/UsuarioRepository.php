@@ -101,7 +101,12 @@ class UsuarioRepository extends BaseRepository implements UsuarioRepositoryInter
 
     public function change($userid, array $params = array())
     {
-        // TODO: Implement change() method.
+        $model = $this->getModel()->findOrFail($userid);
+        $model->password = \Hash::make($params['newpassword']);
+        $model->Changed_at = \Carbon\Carbon::now();
+        if($model->save()) return $model;
+
+        return false;
     }
 
     public function deactivate($id)

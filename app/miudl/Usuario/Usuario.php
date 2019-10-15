@@ -17,6 +17,12 @@ class Usuario extends Authenticable
     protected $hidden = [ 'password', 'remember_token' ];
     public $timestamps = true;
 
+    public $_map = array('Trabajador'=>array('table'=>'TB_Trabajador','field'=>'Nombre'));
+    public function getMap()
+    {
+        return $this->_map;
+    }
+
     public function username()
     {
         return 'Usuario';

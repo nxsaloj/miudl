@@ -7,9 +7,9 @@ import vSelect from 'vue-select'
 
 Vue.component('v-select', vSelect)
 
-if(document.getElementsByClassName("vue-trabajadores").length > 0){
+if(document.getElementsByClassName("vue-facultades").length > 0){
     var vue_emp = new Vue({
-        el: ".vue-trabajadores",
+        el: ".vue-facultades",
         components: {
             paginador,
             toastel
@@ -17,10 +17,10 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
         data :
         {
             api_url:'/api/v1',
-            url:'/rrhh/trabajadores/',
+            url:'/educacion/facultades/',
             show:false,
             showextra:false,
-            trabajadores:[],
+            facultades:[],
             pagination:{
                 "current_page":0,
                 "last_page":0,
@@ -32,14 +32,11 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
                 "field":'Nombre',
                 "type":true
             },
-            filtro:null,
-            filtropuesto:"",
-            puestos:[],
-            puesto: (document.getElementById("puestohidden"))? {"id":$('input[name=puesto]').val(),"Nombre":$('input#puestohidden').val()}:null
+            filtro:null
         },
         methods: {
             //Métodos HTTP
-            getTrabajadores: function() {
+            getFacultades: function() {
                 var url = this.api_url+this.url;
                 axios.get(url, {
                     params: this.getParametros()
@@ -47,51 +44,29 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
                     var data = response.data;
                     if(data)
                     {
-                        this.trabajadores =  data.data;
+                        this.facultades =  data.data;
                         this.pagination = data;
                         delete this.pagination.data;
                     }
                 });
             },
-            eliminarTrabajador: function(trabajador,$event=null) {
-                var url = this.api_url+this.url+trabajador.id;
+            eliminarFacultad: function(facultad,$event=null) {
+                var url = this.api_url+this.url+facultad.id;
 
                 axios.delete(url+(($event)? "?flash=true":"")).then(response => {
                     var data = response.data;
                     if($event) window.location = data.data.Url.replace("api/v1/","");
                     else
                     {
-                        this.getTrabajadores();
+                        this.getFacultades();
                         this.showToast("Eliminado",data.meta.msj,"success");
                     }
                 });
             },
-            getPuestosTrabajo: function(filter, loading) {
-                this.puestos =[];
-                if(filter)
-                {
-                    loading(true);
-                    var url = this.api_url+'/rrhh/puestos';
-                    axios.get(url, {
-                        params: {"filtro":filter,"por_pagina":-1}
-                    }).then(response => {
-                        var data = response.data;
-                        if(data)
-                        {
-                            loading(false);
-                            this.puestos =  data.data;
-                        }
-                    });
-                }
-            },
-            setPuesto(){
-                var id = (this.puesto)? this.puesto.id:null;
-                $("input[name='puesto']").val(id);
-                this.puestos =[];
-            },
             //Funciones
             limpiar(){
                 this.filtro = "";
+                this.filtroproyecto = "";
                 this.filtrodepartamento = "";
             },
             getParametros:function(){
@@ -100,11 +75,11 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
                 if(this.filtro) params['filtro'] = this.filtro;
                 return params;
             },
-            confirmDialog(trabajador, $event=null)
+            confirmDialog(facultad, $event=null)
             {
                 Swal({
                     title: 'Confirmación',
-                    text: "¿Desea eliminar al trabajador "+trabajador.Nombre+"?",
+                    text: "¿Desea eliminar la facultad "+facultad.Nombre+"?",
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Eliminar',
@@ -112,11 +87,11 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
                     animation: false
                   }).then((result) => {
                     if (result.value) {
-                        this.eliminarTrabajador(trabajador,$event);
+                        this.eliminarFacultad(facultad,$event);
                     }
                   })
             },
-            showToast(title, text="El trabajador se eliminó", icon,color){
+            showToast(title, text="La facultad se eliminó", icon,color){
                 $.toast({
                     heading: title,
                     text: text,
@@ -129,13 +104,13 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
                 });
             },
             cambiarPagina: function(){
-                this.getTrabajadores();
+                this.getFacultades();
             },
             toggleOrderBy:function(field)
             {
                 this.orderby.type = (field == this.orderby.field)? !this.orderby.type:true;
                 this.orderby.field = field;
-                this.getTrabajadores();
+                this.getFacultades();
             },
             getOrderBy:function(){
                 return [this.orderby.field, this.orderby.type];
@@ -149,7 +124,7 @@ if(document.getElementsByClassName("vue-trabajadores").length > 0){
             }
         },
         created: function () {
-            if(document.getElementsByClassName("vue-trabajadores-detail").length <= 0) this.getTrabajadores();
+            if(document.getElementsByClassName("vue-facultades-detail").length <= 0) this.getFacultades();
         }
     });
 }

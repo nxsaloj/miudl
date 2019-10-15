@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="vue-trabajadores">
-    @include('layouts.headerpage', array('titulo'=>'Trabajadores'))
+<div class="vue-facultades">
+    @include('layouts.headerpage', array('titulo'=>'Facultades'))
 
     @if(Session::get('info'))
         @php
@@ -17,8 +17,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="form-group form-group-search d-flex search-field">
-                    <input type="text" class="form-control " v-model="filtro" name="trabajador" placeholder="Busca un trabajador" v-on:keyup.enter="getTrabajadores()">
-                    <button class="btn btn-primary ml-3" @click.prevent="getTrabajadores()">Buscar</button>
+                    <input type="text" class="form-control " v-model="filtro" name="facultad" placeholder="Busca un facultad" v-on:keyup.enter="getFacultades()">
+                    <button class="btn btn-primary ml-3" @click.prevent="getFacultades()">Buscar</button>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
     </div>
 
     <div class="form-group">
-        <a href=" {{ route('trabajadores.create') }}  " class="btn btn-success" style="margin: 10px 0; ">Agregar nuevo trabajador</a>
+        <a href=" {{ route('facultades.create') }}  " class="btn btn-success" style="margin: 10px 0; ">Agregar nueva facultad</a>
         <a href="#" @click.prevent="show = !show" class="btn btn-primary mdi-reduce-padding"><i class="mdi mdi-magnify mdi-18px"></i></a>
     </div>
 
@@ -34,7 +34,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    Todos los trabajadores
+                    Todos los facultades
                 </div>
                 <div class="card-body">
                     <template>
@@ -42,40 +42,25 @@
                             <div class="item-row">
                                 <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Codigo')">Código <i v-if="orderby.field == 'Codigo'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
                                 <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Nombre')">Nombre <i v-if="orderby.field == 'Nombre'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
-                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Apellidos')">Apellidos <i v-if="orderby.field == 'Apellidos'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
-                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('FechaNacimiento')">Fecha de nacimiento <i v-if="orderby.field == 'FechaNacimiento'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
-                                <div class="item-col">Puesto de trabajo</div>
                                 <div class="item-col"><span class="item-tag"></span></div>
                             </div>
                         </div>
 
                         <div class="tablavue">
-                            <div class="item-row" v-for="(trabajador, index) in trabajadores">
+                            <div class="item-row" v-for="(facultad, index) in facultades">
                                 <div class="item-col">
                                     <span class="item-title">Código: </span>
-                                    <span class="item-tag">@{{trabajador.Codigo}}</span></div>
+                                    <span class="item-tag">@{{facultad.Codigo}}</span></div>
                                 <div class="item-col">
                                     <span class="item-title">Nombre: </span>
-                                    <span class="item-tag">@{{trabajador.Nombre}}</span>
-                                </div>
-                                <div class="item-col">
-                                    <span class="item-title">Apellidos: </span>
-                                    <span class="item-tag">@{{trabajador.Apellidos}}</span>
-                                </div>
-                                <div class="item-col">
-                                    <span class="item-title">Fecha de nacimiento: </span>
-                                    <span class="item-tag">@{{trabajador.FechaNacimiento | formatDate('DD/MM/YYYY')}}</span>
-                                </div>
-                                <div class="item-col">
-                                    <span class="item-title">Puesto de trabajo: </span>
-                                    <span class="item-tag">@{{ (trabajador.PuestoTrabajo)? trabajador.PuestoTrabajo.Nombre:'-' }}</span>
+                                    <span class="item-tag">@{{facultad.Nombre}}</span>
                                 </div>
                                 <div class="item-col item-col-options white">
                                     <span class="item-tag">
                                         <a href="#"class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Acciones </a>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" :href="url+trabajador.id+'/edit'">Editar</a>
-                                            <a class="dropdown-item" @click.prevent="confirmDialog(trabajador)">Eliminar</a>
+                                            <a class="dropdown-item" :href="url+facultad.id+'/edit'">Editar</a>
+                                            <a class="dropdown-item" @click.prevent="confirmDialog(facultad)">Eliminar</a>
                                         </div>
                                     </span>
                                 </div>

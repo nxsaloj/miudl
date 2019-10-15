@@ -1,10 +1,10 @@
 <?php
 
-namespace miudl\Trabajador;
+namespace miudl\Facultad;
 
 use Validator;
 
-class TrabajadorValidator implements TrabajadorValidatorInterface
+class FacultadValidator implements FacultadValidatorInterface
 {
     protected $mensajes = array(
         'Nombre.required' => 'El campo Nombre no debe estar vacío',
@@ -16,9 +16,8 @@ class TrabajadorValidator implements TrabajadorValidatorInterface
     public function isValid(array $params= array())
     {
         $reglas =  array(
-            'Codigo' => 'required|unique:TB_Trabajador',
-            'Nombre' => 'required',
-            'PuestoTrabajo_id' => 'required'
+            'Codigo' => 'required|unique:TB_Facultad',
+            'Nombre' => 'required'
         );
         //\Log::debug('Puesto P ' . print_r($params['puesto'], true));
         //$puesto = \App\Models\Utils::getVueParam($params,"puesto","PuestoTrabajo_id");
@@ -26,9 +25,6 @@ class TrabajadorValidator implements TrabajadorValidatorInterface
         $datos = array(
             'Codigo' => $params['codigo'],
             'Nombre' => $params['nombre'],
-            'Apellidos' => $params['apellidos'],
-            'FechaNacimiento'=>$params['fechanacimiento'],
-            'PuestoTrabajo_id' => isset($params['puesto'])? $params['puesto']:null,
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);
@@ -46,17 +42,13 @@ class TrabajadorValidator implements TrabajadorValidatorInterface
     public function isValidUpdate(array $params, $id)
     {
         $reglas =  array(
-            'Codigo' => 'required|unique:TB_Trabajador,Codigo,'.$id.',id',
-            'Nombre' => 'required',
-            'PuestoTrabajo_id' => 'required'
+            'Codigo' => 'required|unique:TB_Facultad,Codigo,'.$id.',id',
+            'Nombre' => 'required'
         );
 
         $datos = array(
             'Codigo' => $params['codigo'],
-            'Nombre' => $params['nombre'],
-            'Apellidos' => $params['apellidos'],
-            'FechaNacimiento'=>$params['fechanacimiento'],
-            'PuestoTrabajo_id' => isset($params['puesto'])? $params['puesto']:null,
+            'Nombre' => $params['nombre']
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);

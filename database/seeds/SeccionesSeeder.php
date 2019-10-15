@@ -114,14 +114,14 @@ class SeccionesSeeder extends Seeder
             array('id'=>'seccion_configuracion_pagos',
                 'Nombre' => 'Configuración de pagos',
                 'Icono' => 'mdi mdi-file-document-box',
-                'Url' => 'cuentas',
+                'Url' => 'configuracion_pagos',
                 'idPadre' => 'seccion_finanzas',
                 'Prioridad' => 1
             ),
             array('id'=>'seccion_gestion_pagos',
                 'Nombre' => 'Gestión de pagos',
                 'Icono' => 'mdi mdi-cash-multiple',
-                'Url' => 'cuentas',
+                'Url' => 'gestion_pagos',
                 'idPadre' => 'seccion_finanzas',
                 'Prioridad' => 2
             ),
@@ -143,7 +143,7 @@ class SeccionesSeeder extends Seeder
             array('id'=>'seccion_centros_universitarios',
                 'Nombre' => 'Centros universitarios',
                 'Icono' => 'mdi mdi-domain',
-                'Url' => 'centros_universitarios',
+                'Url' => 'centrosuniversitarios',
                 'idPadre' => 'seccion_educacion',
                 'Prioridad' => 0
             ),

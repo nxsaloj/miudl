@@ -1,15 +1,15 @@
 <?php
 
-namespace miudl\Trabajador;
+namespace miudl\CentroUniversitario;
 
 use App\Utils\Utils;
 use miudl\Base\BaseRepository;
 
-class TrabajadorRepository extends BaseRepository implements TrabajadorRepositoryInterface
+class CentroUniversitarioRepository extends BaseRepository implements CentroUniversitarioRepositoryInterface
 {
     public function getModel($params=[])
     {
-        return new Trabajador($params);
+        return new CentroUniversitario($params);
     }
 
     public function findOrFail($id)
@@ -34,21 +34,20 @@ class TrabajadorRepository extends BaseRepository implements TrabajadorRepositor
         $filtro = isset($params['filtro'])? $params['filtro']:null;
         //Query
 
-        $data = $this->getModel()->whereNull($this->getModel()->getTable().'.Deleted_at')->join('TB_PuestoTrabajo','TB_PuestoTrabajo.id',$this->getModel()->getTable().'.PuestoTrabajo_id');
+        $data = $this->getModel()->whereNull($this->getModel()->getTable().'.Deleted_at');
         //Filtrar por like
         if($filtro)
         {
             $data = $data->where( function ( $query ) use ($filtro)
             {
-                $query->where($this->getModel()->getTable().'.Nombre','like','%'.$filtro.'%')->orWhere($this->getModel()->getTable().'.Codigo',$filtro)
-                ->orWhere('TB_PuestoTrabajo.Nombre','like','%'.$filtro.'%');
+                $query->where($this->getModel()->getTable().'.Nombre','like','%'.$filtro.'%')->orWhere($this->getModel()->getTable().'.Codigo',$filtro);
             });
         }
 
         //Ordenar por campo validado en UTILS
         if($sortby) $data = $data->orderBy($sortby['field'],$sortby['type']);
         //Paginar por X cantidad de registros por página
-        $extrafields = ["TB_PuestoTrabajo.Nombre as PuestoTrabajo_Nombre"];
+        $extrafields = [];
         $fields = Utils::getFieldsJoin($this->getModel(), $extrafields);
         if($pag)
         {
@@ -63,21 +62,7 @@ class TrabajadorRepository extends BaseRepository implements TrabajadorRepositor
     public function create(array $params)
     {
         $model = $this->getModel($params);
-
-        \DB::beginTransaction();
-
-        $usuario = new \miudl\Usuario\Usuario();
-        $usuario->Usuario = \miudl\Usuario\Usuario::getUserName($model->Nombre, $model->Apellidos);
-        $usuario->password = \Hash::make(\miudl\Usuario\Usuario::getDefault());
-
-        if(!$usuario->save()) return false;
-
-        $model->Usuario_id = $usuario->id;
-        if($model->save())
-        {
-            \DB::commit();
-            return $model;
-        }
+        if($model->save()) return $model;
 
         return false;
     }
@@ -85,21 +70,8 @@ class TrabajadorRepository extends BaseRepository implements TrabajadorRepositor
     public function update($id, array $data)
     {
         $model = $this->getModel()->findOrFail($id);
-        \DB::beginTransaction();
         $model->fill($data);
-
-        $usuario = \miudl\Usuario\Usuario::findOrFail($model->Usuario_id);
-        $usuario->Usuario = \miudl\Usuario\Usuario::getUserName($model->Nombre, $model->Apellidos);
-        $usuario->password = \Hash::make(\miudl\Usuario\Usuario::getDefault());
-
-        if(!$usuario->save()) return false;
-
-        $model->Usuario_id = $usuario->id;
-        if($model->save())
-        {
-            \DB::commit();
-            return $model;
-        }
+        if($model->save()) return $model;
 
         return false;
     }
@@ -107,18 +79,6 @@ class TrabajadorRepository extends BaseRepository implements TrabajadorRepositor
     public function delete($id)
     {
         $model = $this->getModel()->findOrFail($id);
-
-
-        \DB::beginTransaction();
-        $usuario = \miudl\Usuario\Usuario::findOrFail($model->Usuario_id);
-        if(!$usuario->delete()) return false;
-        if($model->delete())
-        {
-            \DB::commit();
-            return $model;
-        }
-
-        return false;
         if($model->delete()) return $model;
 
         return false;
@@ -128,6 +88,4 @@ class TrabajadorRepository extends BaseRepository implements TrabajadorRepositor
     {
         return $this->getModel()->onlyTrashed()->where('Codigo',$params['Codigo'])->first();
     }
-
-
 }

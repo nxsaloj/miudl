@@ -1,10 +1,8 @@
 <?php
 
-namespace miudl\Trabajador;
+namespace miudl\CentroUniversitario;
 
-use miudl\PuestoTrabajo\PuestoTrabajo;
-
-class TrabajadorTransformer extends \App\Utils\BaseSerializer
+class CentroUniversitarioTransformer extends \App\Utils\BaseSerializer
 {
     public $permitido = null;
     public $extra = false;
@@ -22,9 +20,7 @@ class TrabajadorTransformer extends \App\Utils\BaseSerializer
             'id'      => $data->id,
             'Codigo'      => $data->Codigo,
             'Nombre'      => $data->Nombre,
-            'Apellidos'      => $data->Apellidos,
-            'FechaNacimiento' => $data->FechaNacimiento,
-            'PuestoTrabajo'      => ($data->PuestoTrabajo_id)? new PuestoTrabajo(array("id"=>$data->PuestoTrabajo_id,"Nombre"=>$data->PuestoTrabajo_Nombre)):null,
+            'Direccion'=> $data->Direccion,
             'Deleted_at'   => $data->Deleted_at,
             'created_at'   => $data->created_at,
             'updated_at'   => $data->updated_at
