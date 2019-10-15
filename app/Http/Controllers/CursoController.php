@@ -151,4 +151,11 @@ class CursoController extends Controller
         $serialized = \App\Utils\Serializer::serializeArray($data, new \miudl\Curso\CursoTransformer);
         return \Response::json($serialized,200);
     }
+
+    public function getCarrerasAPI($id)
+    {
+        $data = $this->repository->searchCarrerasRelated($id);
+        //$serialized = \App\Utils\Serializer::serializeArray($data, new \miudl\Carrera\CarreraTransformer);
+        return \Response::json(array("data"=>$data),200);
+    }
 }

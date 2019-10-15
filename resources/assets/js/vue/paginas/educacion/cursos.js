@@ -20,7 +20,10 @@ if(document.getElementsByClassName("vue-cursos").length > 0){
             url:'/educacion/cursos/',
             show:false,
             showextra:false,
+            curso: (document.getElementById("cursoedit"))? JSON.parse($("#cursoedit").val()):null,
             cursos:[],
+            carreras:(document.getElementById("carrerashidden"))? $("input[name='carrerashidden[]']").map(function(){return JSON.parse($(this).val());}).get():[],
+            carreras_options:[],
             pagination:{
                 "current_page":0,
                 "last_page":0,
@@ -32,7 +35,8 @@ if(document.getElementsByClassName("vue-cursos").length > 0){
                 "field":'Nombre',
                 "type":true
             },
-            filtro:null
+            filtro:null,
+            detalle_tmp:null,
         },
         methods: {
             //Métodos HTTP
@@ -47,6 +51,16 @@ if(document.getElementsByClassName("vue-cursos").length > 0){
                         this.cursos =  data.data;
                         this.pagination = data;
                         delete this.pagination.data;
+                    }
+                });
+            },
+            getCarrerasAsociadas: function() {
+                var url = this.api_url+this.url+this.curso.id+"/carreras";
+                axios.get(url).then(response => {
+                    var data = response.data;
+                    if(data)
+                    {
+                        this.carreras =  data.data;
                     }
                 });
             },
@@ -121,10 +135,63 @@ if(document.getElementsByClassName("vue-cursos").length > 0){
                     $("#extra-action").val(action);
                     $(".submit").trigger( "click" );
                 }, 50);
-            }
+            },
+            /**/
+            getCarreras: function(filter, loading) {
+                this.carreras_options =[];
+                if(filter)
+                {
+                    loading(true);
+                    var url = this.api_url+'/educacion/carreras';
+                    axios.get(url, {
+                        params: {"filtro":filter,"por_pagina":-1}
+                    }).then(response => {
+                        var data = response.data;
+                        if(data)
+                        {
+                            loading(false);
+                            this.carreras_options =  data.data;
+                        }
+                    });
+                }
+            },
+            agregarCarrera:function() {
+                if (this.detalle_tmp)
+                {
+                    var detalle_ = JSON.parse(JSON.stringify(this.detalle_tmp));
+                    detalle_['Ciclo'] = 1;
+                    if(!this.carreras.find(d => d.id === detalle_.id)) {
+                        this.carreras.push(detalle_);
+                    }
+                    this.detalle_tmp = null;
+                }
+            },
+            quitarDetalleDialog(detalle){
+                Swal({
+                    title: 'Confirmación',
+                    text: "¿Desea quitar el detalle?",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Quitar',
+                    cancelButtonText: 'Cancelar',
+                    animation: false
+                }).then((result) => {
+                    if (result.value) {
+                        this.quitarDetalle(detalle);
+                    }
+                })
+            },
+            quitarDetalle:function(detalle){
+                this.carreras.splice(this.carreras.indexOf(detalle), 1);
+                this.$forceUpdate();
+            },
         },
         created: function () {
             if(document.getElementsByClassName("vue-cursos-detail").length <= 0) this.getCursos();
-        }
+            if(document.getElementsByClassName("vue-cursos-detail").length > 0)
+            {
+                if(this.curso) this.getCarrerasAsociadas(this.curso.id);
+            }
+        },
     });
 }

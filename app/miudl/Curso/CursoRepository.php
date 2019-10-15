@@ -61,17 +61,46 @@ class CursoRepository extends BaseRepository implements CursoRepositoryInterface
 
     public function create(array $params)
     {
+        \DB::beginTransaction();
         $model = $this->getModel($params);
-        if($model->save()) return $model;
+
+        if($model->save()){
+            $carreras = $params['Carreras'];
+            if(isset($carreras)) {
+                foreach ($carreras as $carrera)
+                {
+                    $carrera = json_decode($carrera, true);
+                    $model->Carreras()->attach($carrera['id'],["Ciclo"=>$carrera['Ciclo']]);
+                }
+            }
+
+            \DB::commit();
+            return $model;
+        }
 
         return false;
     }
 
     public function update($id, array $data)
     {
+        \DB::beginTransaction();
         $model = $this->getModel()->findOrFail($id);
         $model->fill($data);
-        if($model->save()) return $model;
+
+        if($model->save()){
+            $carreras = $data['Carreras'];
+            if(isset($carreras)) {
+                $model->Carreras()->detach();
+                foreach ($carreras as $carrera)
+                {
+                    $carrera = json_decode($carrera, true);
+                    $model->Carreras()->attach($carrera['id'], ['Ciclo' => $carrera['Ciclo']]);
+                }
+            }
+
+            \DB::commit();
+            return $model;
+        }
 
         return false;
     }
@@ -89,5 +118,13 @@ class CursoRepository extends BaseRepository implements CursoRepositoryInterface
         return $this->getModel()->onlyTrashed()->where('Codigo',$params['Codigo'])->first();
     }
 
+    public function searchCarrerasRelated($id)
+    {
+        $models = \DB::table('TB_CursosCarrera')->join('TB_Curso','TB_CursosCarrera.Curso_id','TB_Curso.id')
+            ->join('TB_Carrera','TB_Carrera.id','TB_CursosCarrera.Carrera_id')
+            ->where('TB_Curso.id',$id)
+            ->get(["TB_Carrera.id","TB_Carrera.Nombre","TB_CursosCarrera.Ciclo"]);
 
+        return $models;
+    }
 }

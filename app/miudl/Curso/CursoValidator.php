@@ -25,6 +25,7 @@ class CursoValidator implements CursoValidatorInterface
         $datos = array(
             'Codigo' => $params['codigo'],
             'Nombre' => $params['nombre'],
+            'Carreras' => (isset($params['carreras']))? $params['carreras']:null,
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);
@@ -48,7 +49,8 @@ class CursoValidator implements CursoValidatorInterface
 
         $datos = array(
             'Codigo' => $params['codigo'],
-            'Nombre' => $params['nombre']
+            'Nombre' => $params['nombre'],
+            'Carreras' => $params['carreras'],
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);

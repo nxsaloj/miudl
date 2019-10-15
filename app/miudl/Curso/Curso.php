@@ -13,4 +13,7 @@ class Curso extends BaseModel
     protected $fillable = ['id','Codigo','Nombre','Deleted_at'];
     public $timestamps = true;
 
+    public function Carreras(){
+        return $this->belongsToMany('miudl\Carrera\Carrera','TB_CursosCarrera','Curso_id','Carrera_id');
+    }
 }
