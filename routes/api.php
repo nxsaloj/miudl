@@ -26,6 +26,10 @@ Route::group(['middleware' => ['api','cors'],'prefix' => 'v1'], function() {
             Route::post('/reactivar/{usuario}', 'UsuarioController@reactivar');
             Route::post('/reasignar/{usuario}', 'UsuarioController@reasignar');
         });
+        Route::group(['prefix' => '/inscripcion'], function ()
+        {
+            Route::get('/', 'InscripcionController@getInscripcionesAPI');
+        });
     });
     Route::group(['prefix' => '/rrhh'], function () {
         Route::group(['prefix' => '/trabajadores'], function() {
@@ -58,6 +62,12 @@ Route::group(['middleware' => ['api','cors'],'prefix' => 'v1'], function() {
             Route::get('/', 'CursoController@getCursosAPI');
             Route::get('/{curso}/carreras', 'CursoController@getCarrerasAPI');
             Route::delete('/{curso}', 'CursoController@destroy');
+        });
+        Route::group(['prefix' => '/estudiantes'], function ()
+        {
+            Route::get('/', 'EstudianteController@getEstudiantesAPI');
+            Route::get('/{estudiante}/carreras', 'EstudianteController@getCarrerasAPI');
+            Route::delete('/{estudiante}', 'EstudianteController@destroy');
         });
     });
 });

@@ -13,4 +13,7 @@ class Trabajador extends BaseModel
     protected $fillable = ['id','Codigo','Nombre','Apellidos','FechaNacimiento','Usuario_id','PuestoTrabajo_id','Deleted_at'];
     public $timestamps = true;
 
+    public function PuestoTrabajo(){
+        return $this->belongsTo('\miudl\PuestoTrabajo\PuestoTrabajo','PuestoTrabajo_id','id');
+    }
 }

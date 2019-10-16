@@ -4,6 +4,7 @@ namespace miudl\Seccion;
 
 use miudl\Base\BaseModel;
 use miudl\Base\BaseRepository;
+use miudl\Usuario\Usuario;
 
 class SeccionRepository extends BaseRepository implements SeccionRepositoryInterface
 {
@@ -55,7 +56,7 @@ class SeccionRepository extends BaseRepository implements SeccionRepositoryInter
         return ($model)? $model->SeccionesPermitidas->pluck($field)->toArray():[];
     }
 
-    public function esPermitido(BaseModel $usuario,$url)
+    public function esPermitido(Usuario $usuario,$url)
     {
         $usuario_id = $usuario->id;
 
@@ -82,28 +83,12 @@ class SeccionRepository extends BaseRepository implements SeccionRepositoryInter
 
     public function getSeccionUser($usuario,$url, $padre=null)
     {
-        if(!self::where(function($query) use ($url, $padre){
+        if(!$this->getModel()->where(function($query) use ($url, $padre){
             $query->where('Url',$url)->orWhere('Url','/'.$url);
             if($padre) $query = $query->orWhere($this->getModel()->getTable().'..Url',$padre->Url."/".$url)->orWhere($this->getModel()->getTable().'.Url','/'.$padre->Url."/".$url);
         })->first()) return true;
 
-        if($usuario->SeccionesPermitidas->count() > 0)
-        {
-            $data = $usuario->SeccionesPermitidas()->where(function($query) use ($url){
-                $query->where('Url',$url)->orWhere('Url','/'.$url);
-            });
-            if($padre) $data = $data->where('idPadre',$padre->id)->first();
-            else $data = $data->first();
-
-            if(!$data && $padre)
-            {
-                if(!$padre->secciones()->where(function($query) use ($url){
-                    $query->where('Url',$url)->orWhere('Url','/'.$url);
-                })->first()) return true;
-            }
-            return $data;
-        }
-        else if($trabajador = $usuario->Trabajador)
+        if($trabajador = $usuario->Trabajador)
         {
             $puesto = $trabajador->PuestoTrabajo;
 

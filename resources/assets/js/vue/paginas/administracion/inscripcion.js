@@ -7,9 +7,9 @@ import vSelect from 'vue-select'
 
 Vue.component('v-select', vSelect)
 
-if(document.getElementsByClassName("vue-estudiantes").length > 0){
+if(document.getElementsByClassName("vue-inscripcion").length > 0){
     var vue_emp = new Vue({
-        el: ".vue-estudiantes",
+        el: ".vue-inscripcion",
         components: {
             paginador,
             toastel
@@ -17,10 +17,10 @@ if(document.getElementsByClassName("vue-estudiantes").length > 0){
         data :
         {
             api_url:'/api/v1',
-            url:'/administracion/estudiantes/',
+            url:'/administracion/inscripcion/',
             show:false,
             showextra:false,
-            estudiantes:[],
+            inscripcion:[],
             pagination:{
                 "current_page":0,
                 "last_page":0,
@@ -41,7 +41,7 @@ if(document.getElementsByClassName("vue-estudiantes").length > 0){
         },
         methods: {
             //Métodos HTTP
-            getEstudiantes: function() {
+            getInscripciones: function() {
                 var url = this.api_url+this.url;
                 axios.get(url, {
                     params: this.getParametros()
@@ -49,22 +49,9 @@ if(document.getElementsByClassName("vue-estudiantes").length > 0){
                     var data = response.data;
                     if(data)
                     {
-                        this.estudiantes =  data.data;
+                        this.inscripcion =  data.data;
                         this.pagination = data;
                         delete this.pagination.data;
-                    }
-                });
-            },
-            eliminarEstudiante: function(estudiante,$event=null) {
-                var url = this.api_url+this.url+estudiante.Estudiante_id;
-
-                axios.delete(url+(($event)? "?flash=true":"")).then(response => {
-                    var data = response.data;
-                    if($event) window.location = data.data.Url.replace("api/v1/","");
-                    else
-                    {
-                        this.getEstudiantes();
-                        this.showToast("Eliminado",data.meta.msj,"success");
                     }
                 });
             },
@@ -80,23 +67,7 @@ if(document.getElementsByClassName("vue-estudiantes").length > 0){
                 if(this.filtro) params['filtro'] = this.filtro;
                 return params;
             },
-            confirmDialog(estudiante, $event=null)
-            {
-                Swal({
-                    title: 'Confirmación',
-                    text: "¿Desea eliminar al estudiante "+estudiante.Nombre+"?",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Eliminar',
-                    cancelButtonText: 'Cancelar',
-                    animation: false
-                  }).then((result) => {
-                    if (result.value) {
-                        this.eliminarEstudiante(estudiante,$event);
-                    }
-                  })
-            },
-            showToast(title, text="El estudiante se eliminó", icon,color){
+            showToast(title, text="La inscripción se creó", icon,color){
                 $.toast({
                     heading: title,
                     text: text,
@@ -129,7 +100,7 @@ if(document.getElementsByClassName("vue-estudiantes").length > 0){
             }
         },
         created: function () {
-            if(document.getElementsByClassName("vue-estudiantes-detail").length <= 0) this.getEstudiantes();
+            if(document.getElementsByClassName("vue-inscripcion-detail").length <= 0) this.getInscripciones();
         }
     });
 }

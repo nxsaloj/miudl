@@ -71,5 +71,13 @@ class EloquentRepositoryProvider extends ServiceProvider{
             'miudl\Curso\CursoValidatorInterface',
             'miudl\Curso\CursoValidator'
         );
+        $this->app->bind(
+            'miudl\Estudiante\EstudianteRepositoryInterface',
+            'miudl\Estudiante\EstudianteRepository'
+        );
+        $this->app->bind(
+            'miudl\Estudiante\EstudianteValidatorInterface',
+            'miudl\Estudiante\EstudianteValidator'
+        );
     }
 }

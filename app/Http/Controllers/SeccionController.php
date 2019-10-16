@@ -21,7 +21,7 @@ class SeccionController extends Controller
         $usuario = Auth::user();
         if($usuario)
         {
-            if($usuario->id > 1) $data = $this->repository->getSeccionesByModel(!isset($parentid),($puesto = $usuario->PuestoTrabajo())? $puesto:$usuario, $parentid);
+            if($usuario->id > 1) $data = $this->repository->getSeccionesByModel(!isset($parentid),($puesto = $usuario->Trabajador)? $puesto->PuestoTrabajo:$usuario, $parentid);
             else $data = $this->repository->getSecciones(!isset($parentid), $parentid);
             return $data;
         }

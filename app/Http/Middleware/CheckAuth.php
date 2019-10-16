@@ -16,7 +16,7 @@ class checkAuth
     protected $repository;
     public function __construct(\miudl\Seccion\SeccionRepositoryInterface $_repository)
     {
-        $repository = $_repository;
+        $this->repository = $_repository;
     }
 
     public function handle($request, Closure $next)

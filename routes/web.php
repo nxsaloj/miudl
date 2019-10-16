@@ -40,12 +40,17 @@ Route::group(['middleware' => ['auth','checkAuth','pre.page']], function () {
         Route::resource('/usuarios', 'UsuarioController')->except(['edit']);
         //Route::resource('/permisos', 'PermisoController')->except(['show']);
         //Route::get('/logs', 'LogController@showLogs');
+
+        Route::resource('/inscripcion', 'InscripcionController');
+        Route::get('/inscripcion/formulario', 'InscripcionController@generarFormulario');
+        Route::get('/inscripcion/imprimir_formulario', 'InscripcionController@imprimirFormulario');
     });
     Route::group(['prefix' => '/educacion'], function() {
         Route::resource('/centrosuniversitarios', 'CentroUniversitarioController')->except(['show']);
         Route::resource('/facultades', 'FacultadController')->except(['show']);
         Route::resource('/carreras', 'CarreraController')->except(['show']);
         Route::resource('/cursos', 'CursoController')->except(['show']);
+        Route::resource('/estudiantes', 'EstudianteController')->except(['show','create']);
     });
 
     //Recursos Humanos

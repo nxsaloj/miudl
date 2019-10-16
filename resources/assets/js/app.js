@@ -5,6 +5,7 @@ import filters from './vue/components/filters'
 import usuarios from './vue/paginas/administracion/usuarios'
 import permisos from './vue/paginas/administracion/permisos'
 import logs from './vue/paginas/administracion/logs'
+import inscripcion from './vue/paginas/administracion/inscripcion'
 
 //RRHH
 import puestos from './vue/paginas/rrhh/puestos'
@@ -15,3 +16,4 @@ import centrosuniversitario from './vue/paginas/educacion/centros_universitarios
 import facultades from './vue/paginas/educacion/facultades'
 import carreras from './vue/paginas/educacion/carreras'
 import cursos from './vue/paginas/educacion/cursos'
+import estudiantes from './vue/paginas/educacion/estudiantes'

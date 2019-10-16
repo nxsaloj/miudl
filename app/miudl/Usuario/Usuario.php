@@ -23,6 +23,10 @@ class Usuario extends Authenticable
         return $this->_map;
     }
 
+    public function Trabajador(){
+        return $this->belongsTo('miudl\Trabajador\Trabajador','id','Usuario_id');
+    }
+
     public function username()
     {
         return 'Usuario';

@@ -27,7 +27,7 @@ class prePage
         {
             if(Auth::check())
             {
-                if (Auth::user()->Changed_at == null && Auth::user()->Usuario_id > 1)
+                if (Auth::user()->Changed_at == null && Auth::user()->id > 1)
                 {
                     return response()->view('app.change.initial');
                 }
