@@ -11,6 +11,8 @@ class PermisosSeccionSeeder extends Seeder
      */
     public function run()
     {
+        Schema::disableForeignKeyConstraints();
+        DB::table('TB_PermisosSeccion')->truncate();
         $models = array(
             array('Seccion_id'=>'seccion_rrhh',
                 'PuestoTrabajo_id' => [1,2]
@@ -54,6 +56,9 @@ class PermisosSeccionSeeder extends Seeder
             array('Seccion_id'=>'seccion_configuracion_pagos',
                 'PuestoTrabajo_id' => [1,3,4]
             ),
+            array('Seccion_id'=>'seccion_gestion_pagos',
+                'PuestoTrabajo_id' => [1,3,4]
+            ),
             array('Seccion_id'=>'registrar_pagos',
                 'PuestoTrabajo_id' => [1,4]
             ),
@@ -90,5 +95,6 @@ class PermisosSeccionSeeder extends Seeder
             }
         }
         DB::table('TB_PermisosSeccion')->insert($permisos);
+        Schema::enableForeignKeyConstraints();
     }
 }

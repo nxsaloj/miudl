@@ -85,7 +85,7 @@ class SeccionRepository extends BaseRepository implements SeccionRepositoryInter
     {
         if(!$this->getModel()->where(function($query) use ($url, $padre){
             $query->where('Url',$url)->orWhere('Url','/'.$url);
-            if($padre) $query = $query->orWhere($this->getModel()->getTable().'..Url',$padre->Url."/".$url)->orWhere($this->getModel()->getTable().'.Url','/'.$padre->Url."/".$url);
+            if($padre) $query = $query->orWhere($this->getModel()->getTable().'.Url',$padre->Url."/".$url)->orWhere($this->getModel()->getTable().'.Url','/'.$padre->Url."/".$url);
         })->first()) return true;
 
         if($trabajador = $usuario->Trabajador)
@@ -104,7 +104,7 @@ class SeccionRepository extends BaseRepository implements SeccionRepositoryInter
                     $query->where('Url',$url)->orWhere('Url','/'.$url);
                 })->first())
                 {
-                    $other = $puesto->SeccionesPermitidas()->leftJoin($this->getModel()->getTable().'. as APP','APP.id','=',$this->getModel()->getTable().$this->getModel()->getTable().'.idPadre')->where(function($query) use ($url, $padre){
+                    $other = $puesto->SeccionesPermitidas()->leftJoin($this->getModel()->getTable().' as APP','APP.id','=',$this->getModel()->getTable().'.idPadre')->where(function($query) use ($url, $padre){
                         $query->where($this->getModel()->getTable().'.Url',$url)->orWhere($this->getModel()->getTable().'.Url','/'.$url)->orWhere($this->getModel()->getTable().'.Url',$padre->Url."/".$url)
                             ->orWhere($this->getModel()->getTable().'.Url','/'.$padre->Url."/".$url);
                     })->where('APP.Url','')->first();
