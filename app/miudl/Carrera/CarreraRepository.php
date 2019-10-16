@@ -90,5 +90,20 @@ class CarreraRepository extends BaseRepository implements CarreraRepositoryInter
         return $this->getModel()->onlyTrashed()->where('Codigo',$params['Codigo'])->first();
     }
 
+    public function getFacultadRelated($id)
+    {
+        $model = $this->getModel()->findOrFail($id);
+        return $model->Facultad;
+    }
+
+    public function searchCarrerasRelated($id)
+    {
+        $models = \DB::table('TB_CursosCarrera')->join('TB_Curso','TB_CursosCarrera.Curso_id','TB_Curso.id')
+            ->join('TB_Carrera','TB_Carrera.id','TB_CursosCarrera.Carrera_id')
+            ->where('TB_Carrera.id',$id)
+            ->get(["TB_Curso.id","TB_Curso.Nombre","TB_CursosCarrera.Ciclo"]);
+
+        return $models;
+    }
 
 }

@@ -1,15 +1,15 @@
 <?php
 
-namespace miudl\Estudiante;
+namespace miudl\Inscripcion;
 
 use App\Utils\Utils;
 use miudl\Base\BaseRepository;
 
-class EstudianteRepository extends BaseRepository implements EstudianteRepositoryInterface
+class InscripcionRepository extends BaseRepository implements InscripcionRepositoryInterface
 {
     public function getModel($params=[])
     {
-        return new Estudiante($params);
+        return new Inscripcion($params);
     }
 
     public function findOrFail($id)
@@ -40,7 +40,7 @@ class EstudianteRepository extends BaseRepository implements EstudianteRepositor
         {
             $data = $data->where( function ( $query ) use ($filtro)
             {
-                $query->where($this->getModel()->getTable().'.Nombre','like','%'.$filtro.'%')->orWhere($this->getModel()->getTable().'.Carne',$filtro);
+                $query->where($this->getModel()->getTable().'.Nombre','like','%'.$filtro.'%')->orWhere($this->getModel()->getTable().'.Codigo',$filtro);
             });
         }
 
@@ -69,10 +69,24 @@ class EstudianteRepository extends BaseRepository implements EstudianteRepositor
 
     public function update($id, array $data)
     {
+        \DB::beginTransaction();
         $model = $this->getModel()->findOrFail($id);
         $model->fill($data);
 
-        if($model->save()) return $model;
+        if($model->save()){
+            $carreras = $data['Carreras'];
+            if(isset($carreras)) {
+                $model->Carreras()->detach();
+                foreach ($carreras as $carrera)
+                {
+                    $carrera = json_decode($carrera, true);
+                    $model->Carreras()->attach($carrera['id'], ['Ciclo' => $carrera['Ciclo']]);
+                }
+            }
+
+            \DB::commit();
+            return $model;
+        }
 
         return false;
     }
@@ -87,24 +101,17 @@ class EstudianteRepository extends BaseRepository implements EstudianteRepositor
 
     public function isDeleted($params)
     {
-        return $this->getModel()->onlyTrashed()->where('Carne',$params['Carne'])->first();
+        return $this->getModel()->onlyTrashed()->where('Codigo',$params['Codigo'])->first();
     }
 
     public function searchCarrerasRelated($id)
     {
-        $models = \DB::table('TB_Inscripcion')->join('TB_Estudiante','TB_Inscripcion.Estudiante_id','TB_Estudiante.id')
+        $models = \DB::table('TB_Inscripcion')->join('TB_Inscripcion','TB_Inscripcion.Inscripcion_id','TB_Inscripcion.id')
             ->join('TB_Carrera','TB_Carrera.id','TB_Inscripcion.Carrera_id')
             ->join('TB_CentroUniversitario','TB_CentroUniversitario.id','TB_Inscripcion.CentroUniversitario_id')
-            ->where('TB_Estudiante.id',$id)
+            ->where('TB_Inscripcion.id',$id)
             ->get(["TB_Carrera.id","TB_Carrera.Nombre","TB_Inscripcion.Fecha"]);
 
         return $models;
-    }
-
-    public function getCorrelativo()
-    {
-        $id = $this->getModel()->selectRaw('COALESCE(MAX(id),0)+1 as id')->pluck('id')->first();
-        return $id;
-
     }
 }

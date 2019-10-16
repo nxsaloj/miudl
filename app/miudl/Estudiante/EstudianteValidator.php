@@ -9,23 +9,26 @@ class EstudianteValidator implements EstudianteValidatorInterface
     protected $mensajes = array(
         'Nombre.required' => 'El campo Nombre no debe estar vacío',
         'Apellidos.required' => 'El campo Apellidos no debe estar vacío',
-        'Codigo.required' => 'El campo Codigo no debe estar vacío',
-        'Codigo.unique' => 'El codigo especificado ya ha sido utilizado anteriormente',
+        'Carne.required' => 'El campo No. de Carne no debe estar vacío',
+        'Carne.unique' => 'El codigo especificado ya ha sido utilizado anteriormente',
     );
 
     public function isValid(array $params= array())
     {
         $reglas =  array(
-            'Codigo' => 'required|unique:TB_Estudiante',
-            'Nombre' => 'required'
+            'Carne' => 'required|unique:TB_Estudiante',
+            'Nombre' => 'required',
+            'Apellidos' => 'required',
         );
         //\Log::debug('Puesto P ' . print_r($params['puesto'], true));
         //$puesto = \App\Models\Utils::getVueParam($params,"puesto","PuestoTrabajo_id");
         //\Log::debug('Puesto ' . $puesto);
         $datos = array(
-            'Codigo' => $params['codigo'],
+            'Carne' => $params['Carne'],
             'Nombre' => $params['nombre'],
-            'Carreras' => (isset($params['carreras']))? $params['carreras']:null,
+            'Apellidos' => $params['apellidos'],
+            'FechaNacimiento'=>$params['fechanacimiento']
+
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);
@@ -43,14 +46,16 @@ class EstudianteValidator implements EstudianteValidatorInterface
     public function isValidUpdate(array $params, $id)
     {
         $reglas =  array(
-            'Codigo' => 'required|unique:TB_Estudiante,Codigo,'.$id.',id',
-            'Nombre' => 'required'
+            'Carne' => 'required|unique:TB_Estudiante,Carne,'.$id.',id',
+            'Nombre' => 'required',
+            'Apellidos' => 'required',
         );
 
         $datos = array(
-            'Codigo' => $params['codigo'],
+            'Carne' => $params['Carne'],
             'Nombre' => $params['nombre'],
-            'Carreras' => $params['carreras'],
+            'Apellidos' => $params['apellidos'],
+            'FechaNacimiento'=>$params['fechanacimiento']
         );
 
         $validator = Validator::make($datos, $reglas, $this->mensajes);

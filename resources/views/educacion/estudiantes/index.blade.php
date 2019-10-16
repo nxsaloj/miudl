@@ -40,8 +40,10 @@
                     <template>
                         <div class="tablavue tablavue-header">
                             <div class="item-row">
-                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Codigo')">Código <i v-if="orderby.field == 'Codigo'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
+                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Carne')">No. Carné <i v-if="orderby.field == 'Carne'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
                                 <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Nombre')">Nombre <i v-if="orderby.field == 'Nombre'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
+                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Apellidos')">Apellidos <i v-if="orderby.field == 'Apellidos'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
+                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('FechaNacimiento')">Fecha de nacimiento <i v-if="orderby.field == 'FechaNacimiento'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
                                 <div class="item-col"><span class="item-tag"></span></div>
                             </div>
                         </div>
@@ -49,11 +51,19 @@
                         <div class="tablavue">
                             <div class="item-row" v-for="(estudiante, index) in estudiantes">
                                 <div class="item-col">
-                                    <span class="item-title">Código: </span>
-                                    <span class="item-tag">@{{estudiante.Codigo}}</span></div>
+                                    <span class="item-title">No. Carné: </span>
+                                    <span class="item-tag">@{{estudiante.Carne}}</span></div>
                                 <div class="item-col">
                                     <span class="item-title">Nombre: </span>
                                     <span class="item-tag">@{{estudiante.Nombre}}</span>
+                                </div>
+                                <div class="item-col">
+                                    <span class="item-title">Apellidos: </span>
+                                    <span class="item-tag">@{{estudiante.Apellidos}}</span>
+                                </div>
+                                <div class="item-col">
+                                    <span class="item-title">Fecha de nacimiento: </span>
+                                    <span class="item-tag">@{{estudiante.FechaNacimiento | formatDate('DD/MM/YYYY')}}</span>
                                 </div>
                                 <div class="item-col item-col-options white">
                                     <span class="item-tag">

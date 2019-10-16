@@ -16,4 +16,8 @@ class Carrera extends BaseModel
     public function Cursos(){
         return $this->belongsToMany('miudl\Curso\Curso','TB_CursosCarrera','Carrera_id','Curso_id')->withPivot('Ciclo');
     }
+    public function Facultad()
+    {
+        return $this->belongsTo('miudl\Facultad\Facultad','Facultad_id','id');
+    }
 }

@@ -5,7 +5,7 @@ namespace App\Utils;
 class Utils{
     public static function getSortBy($campo, $type, $instance,$extras=[], $default="Nombre",$ord="ASC"){
         $permitidos = $instance->getFillable();
-        $global = ["created_at","updated_at","Deleted_at"];
+        $global = ["Created_at","Updated_at","Deleted_at"];
         $tabla = $instance->getTable();
         $map = (method_exists($instance,'getMap'))? $instance->getMap():null;
         $relational = false;
@@ -217,5 +217,109 @@ class Utils{
             }
         }
         return false;
+    }
+
+    public static function getHeaderCSS()
+    {
+        return "
+      
+
+        table
+        {
+            width: 100%;
+            border-collapse: collapse;
+            page-break-inside:auto
+        }
+		table tr    { page-break-inside:avoid; page-break-after:auto }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        table, td.in {
+            border: none;
+        }
+        .has-child td:first-child
+        {
+            border-left: 2px solid #d8ad01;
+        }
+        tr.in{
+            background: #eee;
+        }
+        .header{
+            display: block;
+            height: 85px;           
+            text-align: center;         
+        }
+        .header > img{
+            
+        }
+        .header > *{
+            display:inline-block !important;
+            width: auto;
+            position: relative !important;
+        }
+        .info{
+			margin-left: 0px;
+			
+            margin-right: 20px;
+            left: 0;
+            font-family: 'Wigrum-Regular' !important;
+            color: #252544 !important;
+        }
+        .info h2{
+            color: rgb(60,60,60);
+        }
+        .info p{
+            color: rgb(75,75,75);
+        }
+        .info > *{
+            margin: 0;
+        }
+        .descripcion
+        {
+            margin: 5px 0;
+        } 
+        .title{
+            text-align:center;
+			text-transform: uppercase;
+			margin: 10px 0px;
+        }
+        .firmas{
+            bottom: 0;
+            width: 100% !important;
+            height: auto;
+            margin-top: 100px;
+            text-align: center;
+            page-break-inside: avoid !important;
+        }
+        .firmas .left-box{
+            width: 45%;
+            float: left;
+        }
+        .firmas .right-box{
+            width: 45%;
+            float: right;
+        }
+        .firmas .center-box{
+            width: 400px;
+            margin: 0 auto !important;
+        }
+        .right-box > span, .left-box > span, .center-box > span{
+            display: block;
+            margin-top: 25px;
+        }
+        .descripcion p{
+            margin: 0px;
+        }
+        ";
+    }
+    public static function getHeader()
+    {
+        return "
+        <div class='header'>
+            
+            <div class='info'>
+            <img src='".public_path()."/images/logo_slogan.png' height='85'/>
+            </div>
+        </div>";
     }
 }

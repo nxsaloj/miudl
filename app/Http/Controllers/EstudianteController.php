@@ -80,6 +80,7 @@ class EstudianteController extends Controller
             $data = $respuesta;
             $respuesta = [];
             try {
+                unset($data['Carne']);
                 if ($model = $this->repository->update($id, $data)) {
                     event(new \App\Events\EventUpdated(["Actividad"=>"actualización de estudiante","ItemId"=>$id,"ItemNombre"=>$model->Nombre,"Url"=>$this->_url]));
                     return redirect($this->_url)->with('info', 'La estudiante se ha modificado de forma exitosa');

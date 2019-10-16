@@ -29,6 +29,7 @@ Route::group(['middleware' => ['api','cors'],'prefix' => 'v1'], function() {
         Route::group(['prefix' => '/inscripcion'], function ()
         {
             Route::get('/', 'InscripcionController@getInscripcionesAPI');
+            Route::get('/imprimir_formulario', 'InscripcionController@imprimirFormulario')->name('inscripcion.imprimir');
         });
     });
     Route::group(['prefix' => '/rrhh'], function () {

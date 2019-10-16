@@ -1,8 +1,8 @@
 <?php
 
-namespace miudl\Estudiante;
+namespace miudl\Inscripcion;
 
-class EstudianteTransformer extends \App\Utils\BaseSerializer
+class InscripcionTransformer extends \App\Utils\BaseSerializer
 {
     public $permitido = null;
     public $extra = false;
@@ -18,13 +18,12 @@ class EstudianteTransformer extends \App\Utils\BaseSerializer
     {
         $values = array(
             'id'      => $data->id,
-            'Carne'      => $data->Carne,
-            'Nombre'      => $data->Nombre,
-            'Apellidos'      => $data->Apellidos,
-            'FechaNacimiento'      => $data->FechaNacimiento,
-            'Deleted_at'   => $data->Deleted_at,
-            'created_at'   => $data->created_at,
-            'updated_at'   => $data->updated_at
+            'CentroUniversitario'      => ($data->CentroUniversitario_id)? new miudl\CentroUniversitario\CentroUniversitario(array("id"=>$data->CentroUniversitario_id,"Nombre"=>$data->CentroUniversitario_Nombre)):null,
+            'Estudiante'      => ($data->Estudiante_id)? new miudl\Estudiante\Estudiante(array("id"=>$data->Estudiante_id,"Nombre"=>$data->Estudiante_Nombre)):null,
+            'Carrera'      => ($data->Carrera_id)? new miudl\Carrera\Carrera(array("id"=>$data->Carrera_id,"Nombre"=>$data->Carrera_Nombre)):null,
+            'Fecha'      => $data->Fecha,
+            'Created_at'   => $data->Created_at,
+            'Updated_at'   => $data->Updated_at
         );
         return self::getSerialized($values);
     }

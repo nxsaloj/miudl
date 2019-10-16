@@ -10,7 +10,7 @@ class Estudiante extends BaseModel
 
     protected $table = 'TB_Estudiante';
 	public $primaryKey = 'id';
-    protected $fillable = ['id','Carne','Nombre','Apellidos','FechaNacmiento','Deleted_at'];
+    protected $fillable = ['id','Carne','Nombre','Apellidos','FechaNacimiento','Deleted_at'];
     public $timestamps = true;
 
     public function Carreras(){

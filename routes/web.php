@@ -41,9 +41,10 @@ Route::group(['middleware' => ['auth','checkAuth','pre.page']], function () {
         //Route::resource('/permisos', 'PermisoController')->except(['show']);
         //Route::get('/logs', 'LogController@showLogs');
 
-        Route::resource('/inscripcion', 'InscripcionController');
-        Route::get('/inscripcion/formulario', 'InscripcionController@generarFormulario');
-        Route::get('/inscripcion/imprimir_formulario', 'InscripcionController@imprimirFormulario');
+        Route::resource('/inscripcion', 'InscripcionController')->except(['show']);
+        Route::get('/inscripcion/formulario', 'InscripcionController@generarFormulario')->name('inscripcion.generar');
+        Route::get('/inscripcion/registrar', 'InscripcionController@register')->name('inscripcion.register');
+        Route::post('/inscripcion/registrar', 'InscripcionController@registrar')->name('inscripcion.registrar');
     });
     Route::group(['prefix' => '/educacion'], function() {
         Route::resource('/centrosuniversitarios', 'CentroUniversitarioController')->except(['show']);

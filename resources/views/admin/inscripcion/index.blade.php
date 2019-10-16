@@ -26,7 +26,9 @@
     </div>
 
     <div class="form-group">
-        <a href=" {{ route('inscripcion.create') }}  " class="btn btn-success" style="margin: 10px 0; ">Inscribir estudianten</a>
+        <a href=" {{ route('inscripcion.generar') }}  " class="btn btn-success" style="margin: 10px 0; ">Generar formulario</a>
+        <a href=" {{ route('inscripcion.register') }}  " class="btn btn-success" style="margin: 10px 0; ">Registrar estudiante</a>
+        <a href=" {{ route('inscripcion.create') }}  " class="btn btn-success" style="margin: 10px 0; ">Asignar cursos</a>
         <a href="#" @click.prevent="show = !show" class="btn btn-primary mdi-reduce-padding"><i class="mdi mdi-magnify mdi-18px"></i></a>
     </div>
 
@@ -34,27 +36,18 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    Todos los inscripciones
+                    Todas las inscripciones
                 </div>
                 <div class="card-body">
                     <template>
                         <div class="tablavue tablavue-header">
                             <div class="item-row">
-                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Codigo')">Código <i v-if="orderby.field == 'Codigo'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
-                                <div class="item-col th-pointer" @click.prevent="toggleOrderBy('Nombre')">Nombre <i v-if="orderby.field == 'Nombre'" class="mdi position-absolute ml-1" v-bind:class="{ 'mdi-sort-ascending': orderby.type, 'mdi-sort-descending': !orderby.type }"></i></div>
                                 <div class="item-col"><span class="item-tag"></span></div>
                             </div>
                         </div>
 
                         <div class="tablavue">
                             <div class="item-row" v-for="(inscripcion, index) in inscripciones">
-                                <div class="item-col">
-                                    <span class="item-title">Código: </span>
-                                    <span class="item-tag">@{{inscripcion.Codigo}}</span></div>
-                                <div class="item-col">
-                                    <span class="item-title">Nombre: </span>
-                                    <span class="item-tag">@{{inscripcion.Nombre}}</span>
-                                </div>
                                 <div class="item-col item-col-options white">
                                     <span class="item-tag">
                                         <a href="#"class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Acciones </a>
